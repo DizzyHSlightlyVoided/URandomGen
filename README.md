@@ -11,7 +11,7 @@ Each random generator is derived from the [`System.Random`](http://msdn.microsof
 
 The Generators
 --------------
-The RandomXorShift class is based on the [xorshift](http://www.jstatsoft.org/v08/i14/paper) random number generator developed by George Marsaglia. Specifically, it uses the [xorshift*](http://en.wikipedia.org/wiki/Xorshift#Xorshift.2A) variation, which takes a typical xorshift 
+The RandomXorshift class is based on the [xorshift](http://www.jstatsoft.org/v08/i14/paper) random number generator developed by George Marsaglia. Specifically, it uses the [xorshift*](http://en.wikipedia.org/wiki/Xorshift#Xorshift.2A) variation, which takes a typical xorshift operation and multiplies it by a constant value.
 
 Licenses
 --------
