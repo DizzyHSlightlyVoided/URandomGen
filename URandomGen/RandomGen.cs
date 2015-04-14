@@ -146,7 +146,7 @@ namespace URandomGen
         /// <returns>A signed 32-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
         public override int Next()
         {
-            return (int)(SampleUInt32() >> 1);
+            return (int)_sampleValue(int.MaxValue);
         }
 
         /// <summary>
