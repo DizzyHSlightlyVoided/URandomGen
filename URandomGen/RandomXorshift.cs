@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 This file uses code derived from the content of the Wikipedia article
 http://en.wikipedia.org/wiki/Xorshift
 This article is released under a Creative Commons Attribution Share-Alike license.
-See http://creativecommons.org/ for more information.
+See http://creativecommons.org/ and LICENSE-ThirdParty.md for more information.
 */
 #endregion
 
