@@ -46,7 +46,7 @@ namespace URandomGen
         private const int _seedCount = 32;
         private const int _seedMask = 31;
 
-        private uint[] SeedArray;
+        private uint[] _seedArray;
         private int _curIndex;
 
         /// <summary>
@@ -58,21 +58,21 @@ namespace URandomGen
         /// </exception>
         public RandomXorshift(IEnumerable<uint> seeds)
         {
-            SeedArray = new uint[_seedCount];
-            uint curCount = CopyToArray(seeds, SeedArray);
+            _seedArray = new uint[_seedCount];
+            uint curCount = CopyToArray(seeds, _seedArray);
 
             for (uint i = curCount; i < _seedCount; i++)
             {
                 switch (i)
                 {
                     case 0:
-                        SeedArray[0] = _seedCount;
+                        _seedArray[0] = _seedCount;
                         break;
                     case 1:
-                        SeedArray[1] = SeedArray[0] + _seedMask;
+                        _seedArray[1] = _seedArray[0] + _seedMask;
                         break;
                     default:
-                        SeedArray[i] = curCount + (i * _generate(SeedArray[i - 2], SeedArray[i - 1]));
+                        _seedArray[i] = curCount + (i * _generate(_seedArray[i - 2], _seedArray[i - 1]));
                         break;
                 }
             }
@@ -120,13 +120,13 @@ namespace URandomGen
         /// <returns>A 32-bit unsigned integer between 0 and <see cref="UInt32.MaxValue"/>.</returns>
         protected override uint SampleUInt32()
         {
-            uint seedX = SeedArray[_curIndex];
-            uint seedW = SeedArray[_curIndex = (_curIndex + 1) & _seedMask];
+            uint seedX = _seedArray[_curIndex];
+            uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
 
             uint result = _generate(seedX, seedW) * 69069;
 
             //Really unlikely edge-case, but why risk it?
-            SeedArray[_curIndex] = result == 0 ? 1 : result;
+            _seedArray[_curIndex] = result == 0 ? 1 : result;
 
             return result;
         }
