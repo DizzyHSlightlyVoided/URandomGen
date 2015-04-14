@@ -15,6 +15,8 @@ The RandomCMWC class is based on the [complementary multiply-with-carry](http://
 
 The RandomXorshift class is based on the [xorshift](http://en.wikipedia.org/wiki/Xorshift) random number generator developed by George Marsaglia, described [here](http://www.jstatsoft.org/v08/i14/paper). Specifically, it uses the [xorshift*](http://en.wikipedia.org/wiki/Xorshift#Xorshift.2A) variation, which takes a typical xorshift operation and multiplies it by a constant value.
 
+The RandomMersenne class is based on the [Mersenne Twister](http://en.wikipedia.org/wiki/Mersenne_Twister), developed by Makoto Matsumoto and Takuji Nishimura. The name comes from the fact that its period length is chosen to be a Mersenne prime. The class is mostly a port of Matsumodo and Nishimura's MT19937 implementation, which is based on the Mersenne prime 2<sup>19937</sup>-1.
+
 Licenses
 --------
 
