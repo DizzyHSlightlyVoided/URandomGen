@@ -11,9 +11,11 @@ Each random generator is derived from the [`System.Random`](http://msdn.microsof
 
 The Generators
 --------------
-The RandomXorshift class is based on the [xorshift](http://www.jstatsoft.org/v08/i14/paper) random number generator developed by George Marsaglia. Specifically, it uses the [xorshift*](http://en.wikipedia.org/wiki/Xorshift#Xorshift.2A) variation, which takes a typical xorshift operation and multiplies it by a constant value.
+The RandomCMWC class is based on the [complementary multiply-with-carry](http://en.wikipedia.org/wiki/Multiply-with-carry) random number generator, also invented by George Marsaglia, described [here](http://digitalcommons.wayne.edu/cgi/viewcontent.cgi?article=1725&context=jmasm); the implementation is derived from [a post](https://groups.google.com/d/msg/comp.lang.C/qZFQgKRCQGg/rmPkaRHqxOMJ) which Marsaglia made to the comp.lang.c newsgroup in 2003.
+
+The RandomXorshift class is based on the [xorshift](http://en.wikipedia.org/wiki/Xorshift) random number generator developed by George Marsaglia, described [here](http://www.jstatsoft.org/v08/i14/paper). Specifically, it uses the [xorshift*](http://en.wikipedia.org/wiki/Xorshift#Xorshift.2A) variation, which takes a typical xorshift operation and multiplies it by a constant value.
 
 Licenses
 --------
 
-The URandomGen library is released under the [FreeBSD license](LICENSE.md). All of the classes herein are derived from principles invented by other developers; see [LICENSE-ThirdParty.md](LICENSE-ThirdParty.md) for more information.
+The URandomGen library is released under the [FreeBSD license](LICENSE.md). All of the classes herein are derived from existing principles; see [LICENSE-ThirdParty.md](LICENSE-ThirdParty.md) for more information.
