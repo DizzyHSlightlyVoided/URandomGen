@@ -18,4 +18,4 @@ The RandomXorshift class is based on the [xorshift](http://en.wikipedia.org/wiki
 Licenses
 --------
 
-The URandomGen library is released under the [FreeBSD license](LICENSE.md). All of the classes herein are derived from existing principles; see [LICENSE-ThirdParty.md](LICENSE-ThirdParty.md) for more information.
+The URandomGen library is released under the [three-clause BSD license](LICENSE.md). All of the classes herein are derived from existing principles; see [LICENSE-ThirdParty.md](LICENSE-ThirdParty.md) for more information.
