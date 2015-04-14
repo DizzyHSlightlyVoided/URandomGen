@@ -100,7 +100,9 @@ namespace URandomGen
 
         private long _sampleValue(long length)
         {
-            return ((length * SampleUInt32()) / uint.MaxValue);
+            const long max = uint.MaxValue + 1L;
+
+            return ((length * SampleUInt32()) / max);
         }
 
         /// <summary>
@@ -116,6 +118,8 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 base.Next(minValue, maxValue); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<int>() >= minValue);
+            Contract.Ensures(Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 
             long length = maxValue - (long)minValue;
@@ -135,6 +139,8 @@ namespace URandomGen
         {
             if (maxValue < 0)
                 base.Next(maxValue); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<int>() >= 0);
+            Contract.Ensures(Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 
             return (int)_sampleValue(maxValue);
@@ -146,7 +152,7 @@ namespace URandomGen
         /// <returns>A signed 32-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
         public override int Next()
         {
-            return (int)_sampleValue(int.MaxValue);
+            return Next(int.MaxValue);
         }
 
         /// <summary>
