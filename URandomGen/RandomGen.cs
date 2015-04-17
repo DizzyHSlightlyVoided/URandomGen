@@ -155,6 +155,56 @@ namespace URandomGen
             return Next(int.MaxValue);
         }
 
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="minValue">The inclusive lower bound of the random value.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 32-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
+        /// </exception>
+        public uint NextUInt32(uint minValue, uint maxValue)
+        {
+            if (minValue > maxValue)
+                base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<uint>() >= minValue);
+            Contract.Ensures(Contract.Result<uint>() < maxValue);
+            Contract.EndContractBlock();
+
+            long length = maxValue - (long)minValue;
+
+            return (uint)(minValue + _sampleValue(length));
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than 0.
+        /// </exception>
+        public uint NextUInt32(uint maxValue)
+        {
+            Contract.Ensures(Contract.Result<uint>() >= 0);
+            Contract.Ensures(Contract.Result<uint>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (uint)_sampleValue(maxValue);
+        }
+
+        /// <summary>
+        /// Returns a nonnegative random number.
+        /// </summary>
+        /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
+        public uint NextUInt32()
+        {
+            return NextUInt32(uint.MaxValue);
+        }
+
+
         /// <summary>
         /// Fills the elements of the specified array of bytes with random numbers.
         /// </summary>
