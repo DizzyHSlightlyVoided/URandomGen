@@ -211,9 +211,10 @@ namespace URandomGen
             return NextUInt32(uint.MaxValue);
         }
 
-        const int max16 = 1 << 16;
-        const long max32 = 1L << 32;
-        const long max48 = 1L << 48;
+        private const int max16 = 1 << 16;
+        private const long max32 = 1L << 32;
+        private const long max48 = 1L << 48;
+        private const decimal max64 = ulong.MaxValue + 1.0m;
 
         private static uint _nextUInt32(Random generator, uint minValue, uint maxValue)
         {
@@ -232,7 +233,7 @@ namespace URandomGen
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
-        /// <param name="generator">The random number generator used to generate the random numbers.</param>
+        /// <param name="generator">The random number generator to use.</param>
         /// <param name="minValue">The inclusive lower bound of the random value.</param>
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
@@ -257,7 +258,7 @@ namespace URandomGen
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
-        /// <param name="generator">The random number generator used to generate the random numbers.</param>
+        /// <param name="generator">The random number generator to use.</param>
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
@@ -281,7 +282,7 @@ namespace URandomGen
         /// <summary>
         /// Returns a nonnegative random number.
         /// </summary>
-        /// <param name="generator">The random number generator used to generate the random numbers.</param>
+        /// <param name="generator">The random number generator to use.</param>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <see cref="UInt32.MaxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="generator"/> is <c>null</c>.
@@ -292,11 +293,36 @@ namespace URandomGen
         }
 
 
-        private decimal _sampleValue(RandomGen generator, decimal length)
+        private static decimal _sampleValue(RandomGen generator, decimal length)
         {
             const decimal max = ulong.MaxValue + 1m;
 
             return ((length * generator.SampleUInt64()) / max);
+        }
+
+        private static decimal _next64(Random generator, decimal minValue, decimal maxValue)
+        {
+            decimal length = maxValue - minValue;
+
+            if (generator is RandomGen)
+                return minValue + _sampleValue((RandomGen)generator, length);
+
+            if (length <= int.MaxValue)
+                return minValue + generator.Next((int)length);
+
+            ulong result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
+
+            if (result <= uint.MaxValue)
+                return (length * result) / max32;
+
+            result |= (ulong)generator.Next(max16) << 32;
+
+            if (result < max48)
+                return (length * result) / max48;
+
+            result |= (ulong)generator.Next(max16) << 48;
+
+            return length * result / max64;
         }
 
         /// <summary>
@@ -349,6 +375,66 @@ namespace URandomGen
             return Next64(long.MaxValue);
         }
 
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="minValue">The inclusive lower bound of the random value.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>A signed 64-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
+        /// </exception>
+        public static long Next64(Random generator, long minValue, long maxValue)
+        {
+            if (minValue > maxValue)
+                generator.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<long>() >= minValue);
+            Contract.Ensures(Contract.Result<long>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (long)_next64(generator, minValue, maxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than 0.
+        /// </exception>
+        public static long Next64(Random generator, long maxValue)
+        {
+            if (maxValue < 0)
+                generator.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<long>() >= 0);
+            Contract.Ensures(Contract.Result<long>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (long)_next64(generator, 0, maxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <see cref="Int64.MaxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        public static long Next64(Random generator)
+        {
+            return Next64(generator, long.MaxValue);
+        }
+
 
         /// <summary>
         /// Returns a random integer within a specified range.
@@ -396,6 +482,66 @@ namespace URandomGen
         public ulong NextUInt64()
         {
             return NextUInt64(ulong.MaxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="minValue">The inclusive lower bound of the random value.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
+        /// </exception>
+        public static ulong NextUInt64(Random generator, ulong minValue, ulong maxValue)
+        {
+            if (minValue > maxValue)
+                generator.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<ulong>() >= minValue);
+            Contract.Ensures(Contract.Result<ulong>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (ulong)_next64(generator, minValue, maxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than 0.
+        /// </exception>
+        public static ulong NextUInt64(Random generator, ulong maxValue)
+        {
+            if (maxValue < 0)
+                generator.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<ulong>() >= 0);
+            Contract.Ensures(Contract.Result<ulong>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (ulong)_next64(generator, 0, maxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="Int64.MaxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        public static ulong NextUInt64(Random generator)
+        {
+            return NextUInt64(generator, ulong.MaxValue);
         }
 
 
