@@ -478,7 +478,7 @@ namespace URandomGen
         /// <summary>
         /// Returns a nonnegative random number.
         /// </summary>
-        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="Int64.MaxValue"/>.</returns>
         public ulong NextUInt64()
         {
             return NextUInt64(ulong.MaxValue);
@@ -535,7 +535,7 @@ namespace URandomGen
         /// Returns a random integer within a specified range.
         /// </summary>
         /// <param name="generator">The random number generator to use.</param>
-        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="Int64.MaxValue"/>.</returns>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="UInt64.MaxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="generator"/> is <c>null</c>.
         /// </exception>
@@ -573,13 +573,28 @@ namespace URandomGen
         /// </exception>
         public void NextNonZeroBytes(byte[] buffer)
         {
+            NextNonZeroBytes(this, buffer);
+        }
+
+        /// <summary>
+        /// Fills the elements of the specified array of bytes with random numbers between 1 and 255 inclusive.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="buffer">A byte array to fill with random numbers.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> is <c>null</c>.
+        /// </exception>
+        public static void NextNonZeroBytes(Random generator, byte[] buffer)
+        {
+            if (generator == null) throw new ArgumentNullException("buffer");
             if (buffer == null) throw new ArgumentNullException("buffer");
 
             Contract.Ensures(Array.IndexOf(Contract.ValueAtReturn(out buffer), 0) < 0);
             Contract.EndContractBlock();
 
+            const int maxBytes = byte.MaxValue + 1;
             for (int i = 0; i < buffer.Length; i++)
-                buffer[i] = (byte)((SampleUInt32() % byte.MaxValue) + 1);
+                buffer[i] = (byte)generator.Next(1, maxBytes);
         }
     }
 }
