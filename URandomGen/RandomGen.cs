@@ -102,16 +102,14 @@ namespace URandomGen
         /// <returns>A random number which is greater than or equal to 0.0 and which is less than 1.0.</returns>
         protected sealed override double Sample()
         {
-            const double max = uint.MaxValue + 1.0;
+            const double max = max32;
 
             return SampleUInt32() / max;
         }
 
-        private long _sampleValue(long length)
+        private static long _sampleValue(RandomGen generator, long length)
         {
-            const long max = uint.MaxValue + 1L;
-
-            return ((length * SampleUInt32()) / max);
+            return ((length * generator.SampleUInt32()) / max32);
         }
 
         /// <summary>
@@ -133,7 +131,7 @@ namespace URandomGen
 
             long length = maxValue - (long)minValue;
 
-            return (int)(minValue + _sampleValue(length));
+            return (int)(minValue + _sampleValue(this, length));
         }
 
         /// <summary>
@@ -152,7 +150,7 @@ namespace URandomGen
             Contract.Ensures(Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 
-            return (int)_sampleValue(maxValue);
+            return (int)_sampleValue(this, maxValue);
         }
 
         /// <summary>
@@ -184,7 +182,7 @@ namespace URandomGen
 
             long length = maxValue - (long)minValue;
 
-            return (uint)(minValue + _sampleValue(length));
+            return (uint)(minValue + _sampleValue(this, length));
         }
 
         /// <summary>
@@ -201,7 +199,7 @@ namespace URandomGen
             Contract.Ensures(Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
 
-            return (uint)_sampleValue(maxValue);
+            return (uint)_sampleValue(this, maxValue);
         }
 
         /// <summary>
@@ -213,11 +211,92 @@ namespace URandomGen
             return NextUInt32(uint.MaxValue);
         }
 
-        private decimal _sampleValue(decimal length)
+        const int max16 = 1 << 16;
+        const long max32 = 1L << 32;
+        const long max48 = 1L << 48;
+
+        private static uint _nextUInt32(Random generator, uint minValue, uint maxValue)
+        {
+            long length = maxValue - (long)minValue;
+            if (generator is RandomGen)
+                return (uint)(minValue + _sampleValue((RandomGen)generator, length));
+
+            if (length <= int.MaxValue)
+                return (uint)(generator.Next((int)length) + minValue);
+
+            uint result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
+
+            return (uint)((length * result) / max32);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator used to generate the random numbers.</param>
+        /// <param name="minValue">The inclusive lower bound of the random value.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 32-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
+        /// </exception>
+        public static uint NextUInt32(Random generator, uint minValue, uint maxValue)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            if (minValue > maxValue)
+                generator.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<uint>() >= minValue);
+            Contract.Ensures(Contract.Result<uint>() < maxValue);
+            Contract.EndContractBlock();
+
+            return _nextUInt32(generator, minValue, maxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="generator">The random number generator used to generate the random numbers.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than 0.
+        /// </exception>
+        public static uint NextUInt32(Random generator, uint maxValue)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            if (maxValue < 0)
+                generator.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<uint>() >= 0);
+            Contract.Ensures(Contract.Result<uint>() < maxValue);
+            Contract.EndContractBlock();
+
+            return _nextUInt32(generator, 0, maxValue);
+        }
+
+        /// <summary>
+        /// Returns a nonnegative random number.
+        /// </summary>
+        /// <param name="generator">The random number generator used to generate the random numbers.</param>
+        /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <see cref="UInt32.MaxValue"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <c>null</c>.
+        /// </exception>
+        public static uint NextUInt32(Random generator)
+        {
+            return NextUInt32(generator, uint.MaxValue);
+        }
+
+
+        private decimal _sampleValue(RandomGen generator, decimal length)
         {
             const decimal max = ulong.MaxValue + 1m;
 
-            return ((length * SampleUInt64()) / max);
+            return ((length * generator.SampleUInt64()) / max);
         }
 
         /// <summary>
@@ -239,7 +318,7 @@ namespace URandomGen
 
             decimal length = (decimal)maxValue - minValue;
 
-            return (long)(_sampleValue(length) + minValue);
+            return (long)(_sampleValue(this, length) + minValue);
         }
 
         /// <summary>
@@ -258,7 +337,7 @@ namespace URandomGen
             Contract.Ensures(Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 
-            return (long)_sampleValue((decimal)maxValue);
+            return (long)_sampleValue(this, (decimal)maxValue);
         }
 
         /// <summary>
@@ -269,6 +348,7 @@ namespace URandomGen
         {
             return Next64(long.MaxValue);
         }
+
 
         /// <summary>
         /// Returns a random integer within a specified range.
@@ -289,7 +369,7 @@ namespace URandomGen
 
             decimal length = (decimal)maxValue - minValue;
 
-            return (ulong)(_sampleValue(length) + minValue);
+            return (ulong)(_sampleValue(this, length) + minValue);
         }
 
         /// <summary>
@@ -306,7 +386,7 @@ namespace URandomGen
             Contract.Ensures(Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 
-            return (ulong)_sampleValue((decimal)maxValue);
+            return (ulong)_sampleValue(this, (decimal)maxValue);
         }
 
         /// <summary>
