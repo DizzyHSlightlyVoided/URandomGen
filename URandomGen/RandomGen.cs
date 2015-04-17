@@ -82,10 +82,19 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// When overridden in a derived class, this method is used by other methods to generate random numbers.
+        /// When overridden in a derived class, this method is used by other methods to generate random 32-bit numbers.
         /// </summary>
-        /// <returns>A 32-bit unsigned integer between 0 and <see cref="UInt32.MaxValue"/>.</returns>
+        /// <returns>A 32-bit unsigned integer which is greater than or equal to 0 and less than or equal to <see cref="UInt32.MaxValue"/>.</returns>
         protected abstract uint SampleUInt32();
+
+        /// <summary>
+        /// This method is used by other methods to generate random 64-bit numbers.
+        /// </summary>
+        /// <returns>A 32-bit unsigned integer which is greater than or equal to 0 and less than or equal to <see cref="UInt64.MaxValue"/>.</returns>
+        protected virtual ulong SampleUInt64()
+        {
+            return ((ulong)SampleUInt32() << 32) | SampleUInt32();
+        }
 
         /// <summary>
         /// Return a random number between 0.0 and 1.0.
@@ -202,6 +211,111 @@ namespace URandomGen
         public uint NextUInt32()
         {
             return NextUInt32(uint.MaxValue);
+        }
+
+        private decimal _sampleValue(decimal length)
+        {
+            const decimal max = ulong.MaxValue + 1m;
+
+            return ((length * SampleUInt64()) / max);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="minValue">The inclusive lower bound of the random value.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>A signed 64-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
+        /// </exception>
+        public long Next64(long minValue, long maxValue)
+        {
+            if (minValue > maxValue)
+                base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<long>() >= minValue);
+            Contract.Ensures(Contract.Result<long>() < maxValue);
+            Contract.EndContractBlock();
+
+            decimal length = (decimal)maxValue - minValue;
+
+            return (long)(_sampleValue(length) + minValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than 0.
+        /// </exception>
+        public long Next64(long maxValue)
+        {
+            if (maxValue < 0)
+                base.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<long>() >= 0);
+            Contract.Ensures(Contract.Result<long>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (long)_sampleValue((decimal)maxValue);
+        }
+
+        /// <summary>
+        /// Returns a nonnegative random number.
+        /// </summary>
+        /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
+        public long Next64()
+        {
+            return Next64(long.MaxValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="minValue">The inclusive lower bound of the random value.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
+        /// </exception>
+        public ulong NextUInt64(ulong minValue, ulong maxValue)
+        {
+            if (minValue > maxValue)
+                base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+            Contract.Ensures(Contract.Result<ulong>() >= minValue);
+            Contract.Ensures(Contract.Result<ulong>() < maxValue);
+            Contract.EndContractBlock();
+
+            decimal length = (decimal)maxValue - minValue;
+
+            return (ulong)(_sampleValue(length) + minValue);
+        }
+
+        /// <summary>
+        /// Returns a random integer within a specified range.
+        /// </summary>
+        /// <param name="maxValue">The exclusive upper bound of the random value.</param>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="maxValue"/> is less than 0.
+        /// </exception>
+        public ulong NextUInt64(ulong maxValue)
+        {
+            Contract.Ensures(Contract.Result<ulong>() >= 0);
+            Contract.Ensures(Contract.Result<ulong>() < maxValue);
+            Contract.EndContractBlock();
+
+            return (ulong)_sampleValue((decimal)maxValue);
+        }
+
+        /// <summary>
+        /// Returns a nonnegative random number.
+        /// </summary>
+        /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
+        public ulong NextUInt64()
+        {
+            return NextUInt64(ulong.MaxValue);
         }
 
 
