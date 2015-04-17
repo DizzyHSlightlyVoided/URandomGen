@@ -320,7 +320,7 @@ namespace URandomGen
 
 
         /// <summary>
-        /// Fills the elements of the specified array of bytes with random numbers.
+        /// Fills the elements of the specified array of bytes with random numbers between 0 and 255 inclusive.
         /// </summary>
         /// <param name="buffer">A byte array to fill with random numbers.</param>
         /// <exception cref="ArgumentNullException">
@@ -332,10 +332,28 @@ namespace URandomGen
 
             Contract.EndContractBlock();
 
-            const int maxBytes = Byte.MaxValue + 1;
+            const int maxBytes = byte.MaxValue + 1;
 
             for (int i = 0; i < buffer.Length; i++)
                 buffer[i] = (byte)(SampleUInt32() % maxBytes);
+        }
+
+        /// <summary>
+        /// Fills the elements of the specified array of bytes with random numbers between 1 and 255 inclusive.
+        /// </summary>
+        /// <param name="buffer">A byte array to fill with random numbers.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> is <c>null</c>.
+        /// </exception>
+        public void NextNonZeroBytes(byte[] buffer)
+        {
+            if (buffer == null) throw new ArgumentNullException("buffer");
+
+            Contract.Ensures(Array.IndexOf(Contract.ValueAtReturn(out buffer), 0) < 0);
+            Contract.EndContractBlock();
+
+            for (int i = 0; i < buffer.Length; i++)
+                buffer[i] = (byte)((SampleUInt32() % byte.MaxValue) + 1);
         }
     }
 }
