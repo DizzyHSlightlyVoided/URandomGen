@@ -95,6 +95,8 @@ namespace URandomGen
         private RandomMersenne(int length, uint[] seeds)
             : this(19650218U) //Initializing via a constant, as per MT19937
         {
+            if (length == 0) return;
+
             uint i = 1, j = 0;
 
             for (uint k = (_seedCount > (uint)length) ? _seedCount : (uint)length; k > 0; k--)
