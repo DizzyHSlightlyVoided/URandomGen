@@ -57,7 +57,7 @@ namespace URandomGen
             uint prevSeed = _seedArray[0] = seed;
 
             for (uint i = 1; i < _seedCount; i++)
-                prevSeed = _seedArray[i] = (1812433253U * (prevSeed ^ (prevSeed >> 30)) + i);
+                prevSeed = _seedArray[i] = (1812433253U * _msblsb(prevSeed) + i);
         }
 
         /// <summary>
@@ -99,31 +99,35 @@ namespace URandomGen
 
             for (uint k = (_seedCount > (uint)length) ? _seedCount : (uint)length; k > 0; k--)
             {
-                uint prevSeed = _seedArray[i - 1];
-                _seedArray[i] = (_seedArray[i] ^ ((prevSeed ^ (prevSeed >> 30)) * 1664525U)) + seeds[j] + j;
+                _seedArray[i] = (_seedArray[i] ^ (_msblsb(_seedArray[i - 1]) * 1664525U)) + seeds[j] + j;
 
-                i++;
-                if (i >= _seedCount)
-                {
-                    _seedArray[0] = _seedArray[_seedCount - 1];
-                    i = 1;
-                }
+                _iLoop(ref i);
                 j++;
                 if (j >= length) j = 0;
             }
 
             for (uint k = _seedCount - 1; k > 0; k--)
             {
-                uint prevSeed = _seedArray[i - 1];
-                _seedArray[i] = (_seedArray[i] ^ ((prevSeed ^ (prevSeed >> 30)) * 1566083941U)) - i;
-                i++;
-                if (i >= _seedCount)
-                {
-                    _seedArray[0] = _seedArray[_seedCount - 1];
-                    i = 1;
-                }
+                _seedArray[i] = (_seedArray[i] ^ (_msblsb(_seedArray[i - 1]) * 1566083941U)) - i;
+
+                _iLoop(ref i);
             }
             _seedArray[0] = 0x80000000U;
+        }
+
+        private void _iLoop(ref uint i)
+        {
+            i++;
+            if (i >= _seedCount)
+            {
+                _seedArray[0] = _seedArray[_seedCount - 1];
+                i = 1;
+            }
+        }
+
+        private static uint _msblsb(uint prevSeed)
+        {
+            return prevSeed ^ (prevSeed >> 30);
         }
 
         private static int _arrayLen(uint[] seeds)
