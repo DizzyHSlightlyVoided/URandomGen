@@ -93,6 +93,7 @@ namespace URandomGen
         }
 
         private RandomMersenne(int length, uint[] seeds)
+            : this(19650218U) //Initializing via a constant, as per MT19937
         {
             uint i = 1, j = 0;
 
@@ -159,9 +160,7 @@ namespace URandomGen
                     _seedArray[i] = _seedArray[(i + 397) % _seedCount] ^ (curVal >> 1);
 
                     if ((curVal & 1) == 1) //If y is odd ...
-                    {
                         _seedArray[i] ^= 0x9908b0df;
-                    }
                 }
                 _curIndex = 0;
             }
