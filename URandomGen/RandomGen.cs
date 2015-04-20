@@ -43,7 +43,7 @@ namespace URandomGen
         /// Returns an array containing a set of default seed values.
         /// </summary>
         /// <returns>An array containing four elements: <see cref="Environment.TickCount"/>, the upper 32 bits of the <see cref="DateTime.Ticks"/>
-        /// property of <see cref="DateTime.Now"/>, the lower 32 bits thereof, and the sum of all previous values, converted to <see cref="UInt32"/>
+        /// property of <see cref="DateTime.Now"/>, the lower 32 bits thereof, and the sum of all previous values, all converted to <see cref="UInt32"/>
         /// values.</returns>
         public static uint[] DefaultSeeds()
         {
@@ -52,7 +52,7 @@ namespace URandomGen
 
             uint[] seeds = new uint[]
             {
-                (uint)Environment.TickCount,
+                (uint)tickCount,
                 (uint)(nowTicks >> 32),
                 (uint)nowTicks,
                 0
@@ -61,6 +61,15 @@ namespace URandomGen
             seeds[3] = seeds[0] + seeds[1] + seeds[2];
 
             return seeds;
+        }
+
+        /// <summary>
+        /// Returns a single default seed.
+        /// </summary>
+        /// <returns>The lower 32 bits of the <see cref="DateTime.Ticks"/> property of <see cref="DateTime.Now"/>.</returns>
+        public static uint DefaultSingleSeed()
+        {
+            return (uint)DateTime.Now.Ticks;
         }
 
         internal uint CopyToArray(IEnumerable<uint> seeds, uint[] destination)
