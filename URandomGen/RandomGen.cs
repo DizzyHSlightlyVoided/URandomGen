@@ -295,9 +295,12 @@ namespace URandomGen
 
         private static decimal _sampleValue(RandomGen generator, decimal length)
         {
-            const decimal max = ulong.MaxValue + 1m;
+            if (length == max32)
+                return generator.SampleUInt32();
+            if (length <= max32)
+                return (length * generator.SampleUInt32()) / max32;
 
-            return ((length * generator.SampleUInt64()) / max);
+            return (length * generator.SampleUInt64()) / max64;
         }
 
         private static decimal _next64(Random generator, decimal minValue, decimal maxValue)
@@ -307,7 +310,7 @@ namespace URandomGen
             if (generator is RandomGen)
                 return minValue + _sampleValue((RandomGen)generator, length);
 
-            if (length <= int.MaxValue)
+            if (length < max32)
                 return minValue + generator.Next((int)length);
 
             ulong result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
@@ -527,8 +530,8 @@ namespace URandomGen
             Contract.Ensures(Contract.Result<ulong>() >= 0);
             Contract.Ensures(Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
-
-            return (ulong)_next64(generator, 0, maxValue);
+            var value = _next64(generator, 0, maxValue);
+            return (ulong)value;
         }
 
         /// <summary>

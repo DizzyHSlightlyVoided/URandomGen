@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen", "URandomGen\URandomGen.csproj", "{BE5CBF04-F927-4F39-8E8A-88F3DDF31999}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Tests", "URandomGen.Tests\URandomGen.Tests.csproj", "{DF68014E-F2E3-43F8-8997-CFD43E00ACBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,9 @@ Global
 		{BE5CBF04-F927-4F39-8E8A-88F3DDF31999}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE5CBF04-F927-4F39-8E8A-88F3DDF31999}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE5CBF04-F927-4F39-8E8A-88F3DDF31999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF68014E-F2E3-43F8-8997-CFD43E00ACBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF68014E-F2E3-43F8-8997-CFD43E00ACBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF68014E-F2E3-43F8-8997-CFD43E00ACBF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
