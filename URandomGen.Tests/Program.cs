@@ -45,6 +45,9 @@ namespace URandomGen.Tests
                     case ConsoleKey.D4:
                         generator = new Random();
                         break;
+                    default:
+                        generator = null;
+                        break;
                 }
 
                 if (generator != null)
