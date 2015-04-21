@@ -206,12 +206,21 @@ namespace URandomGen.Tests
                         foreach (int curVal in hundreds)
                         {
                             int nextDex = curDex + 1;
-                            Rectangle top = new Rectangle(prevDex, curVal + firstTopY - 1, 2, 2), bottom = new Rectangle(prevDex, curVal + secondTopY - 1, 2, 2);
 
-                            g.FillRectangle(Brushes.Cyan, top);
-                            g.FillRectangle(Brushes.Cyan, bottom);
-                            g.DrawRectangle(Pens.Blue, top);
-                            g.DrawRectangle(Pens.Blue, bottom);
+                            g.FillRectangle(Brushes.Blue, new Rectangle(prevDex, curVal + firstTopY - 1, 3, 3));
+                            g.FillRectangle(Brushes.Blue, new Rectangle(prevDex, curVal + secondTopY - 1, 3, 3));
+                            
+                            prevDex = curDex;
+                            curDex = nextDex;
+                        } 
+                        prevDex = leftMargin;
+                        curDex = leftMargin + 1;
+                        foreach (int curVal in hundreds)
+                        {
+                            int nextDex = curDex + 1;
+
+                            g.FillRectangle(Brushes.Cyan, new Rectangle(curDex, curVal + firstTopY, 1, 1));
+                            g.FillRectangle(Brushes.Cyan, new Rectangle(curDex, curVal + secondTopY, 1, 1));
 
                             prevDex = curDex;
                             curDex = nextDex;
