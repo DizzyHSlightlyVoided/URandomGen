@@ -164,25 +164,26 @@ namespace URandomGen.Tests
 
                     const long histLength = 10;
                     int[] histogram = new int[histLength];
+                    int histExpected = results.Length / (int)histLength;
 
                     foreach (uint curVal in results)
                         histogram[curVal * histLength / maxDiv]++;
 
                     const PixelFormat pixelFormat = PixelFormat.Format24bppRgb;
                     const int margin = 16;
-                    const int totalMargin = margin * 4;
                     const int leftMargin = margin * 3;
+                    const int totalMargin = margin * 4;
                     int width = totalMargin + results.Length;
 
-                    bmp = new Bitmap(width, 496 + margin + margin, pixelFormat);
+                    bmp = new Bitmap(width, 422 + leftMargin, pixelFormat);
 
                     using (Graphics g = Graphics.FromImage(bmp))
-                    using (Font f = new Font(FontFamily.GenericMonospace, 6, FontStyle.Regular))
+                    using (Font f = new Font(FontFamily.GenericMonospace, 7, FontStyle.Regular))
                     {
                         const int leftBorderX = leftMargin - 2;
                         const int firstTopY = margin, firstBottomY = firstTopY + 102;
-                        const int secondTopY = firstBottomY + leftMargin, secondBottomY = secondTopY + 102;
-                        const int thirdTopY = secondBottomY + leftMargin;
+                        const int secondTopY = firstBottomY + margin, secondBottomY = secondTopY + 102;
+                        const int thirdTopY = secondBottomY + margin;
                         int rightBorderX = leftMargin + results.Length;
 
                         g.FillRectangle(Brushes.White, new Rectangle(Point.Empty, bmp.Size));
@@ -232,19 +233,28 @@ namespace URandomGen.Tests
                         for (int i = 0; i < histogram.Length; i++)
                         {
                             var curVal = histogram[i];
-                            int valWidth = curVal * 2;
                             const double histOffset = 1.0 / histLength;
                             const int lineHeight = 200 / (int)histLength;
 
-                            Rectangle curRect = new Rectangle(leftBorderX, (lineHeight * i) + thirdTopY, valWidth, lineHeight);
-                            g.FillRectangle(Brushes.Cyan, curRect);
-                            g.DrawRectangle(Pens.Black, curRect);
+                            int diff = Math.Abs(histExpected - curVal);
 
-                            string s = string.Format("{0:F1}-{1:F1}", histOffset * i, histOffset * (i + 1));
+                            int y = (lineHeight * i) + thirdTopY;
+                            g.FillRectangle(Brushes.Cyan, new Rectangle(leftBorderX + 1, y, curVal, lineHeight));
+                            g.FillRectangle(Brushes.DeepSkyBlue, new Rectangle(leftBorderX + 1, y, diff, lineHeight));
+                            g.DrawRectangle(Pens.Black, new Rectangle(leftBorderX, y, curVal + 1, lineHeight));
+
+                            string sRange = string.Format("{0:F1}-{1:F1}", histOffset * i, histOffset * (i + 1));
                             int textY = (lineHeight * i) + (thirdTopY + 1);
+                            g.DrawString(sRange, f, Brushes.Black, leftBorderX - g.MeasureString(sRange, f).Width, textY);
 
-                            g.DrawString(s, f, Brushes.Black, leftBorderX - g.MeasureString(s, f).Width, textY);
-                            g.DrawString(curVal.ToString(), f, Brushes.Black, (leftBorderX + 1) + valWidth, textY);
+
+                            string sValue = string.Format("{0} (DELTA: {1}", curVal, diff);
+
+                            if (histExpected != 100)
+                                sValue += ", " + (diff * 100F / histExpected);
+                            sValue += "%)";
+
+                            g.DrawString(sValue, f, Brushes.Black, (leftBorderX + 1) + curVal, textY);
                         }
 
                         g.DrawLine(Pens.Black, new Point(leftBorderX, firstTopY), new Point(leftBorderX, firstBottomY));
@@ -253,6 +263,7 @@ namespace URandomGen.Tests
                         g.DrawLine(Pens.Black, new Point(leftBorderX, secondTopY), new Point(leftBorderX, secondBottomY));
                         g.DrawLine(Pens.Black, new Point(leftBorderX, secondBottomY), new Point(rightBorderX, secondBottomY));
 
+                        g.DrawString("EXPECTED: " + histExpected, f, Brushes.Black, 1, secondBottomY + (margin / 3));
                         for (int i = 0; i < 10; i++)
                         {
                             int y = (i * 10);
