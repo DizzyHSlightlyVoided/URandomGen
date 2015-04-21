@@ -187,6 +187,7 @@ namespace URandomGen.Tests
 
                         int? prevVal = null;
                         int curDex = leftMargin + 1;
+                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                         foreach (int curVal in hundreds)
                         {
                             if (prevVal != null)
@@ -198,6 +199,8 @@ namespace URandomGen.Tests
                             }
                             prevVal = curVal;
                         }
+                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+
                         int prevDex = leftMargin;
                         curDex = leftMargin + 1;
                         foreach (int curVal in hundreds)
