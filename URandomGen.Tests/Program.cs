@@ -84,7 +84,7 @@ namespace URandomGen.Tests
 
                     do
                     {
-                        Console.WriteLine(generator.GetType().Name);
+                        Console.WriteLine(generator.GetType().FullName);
                         Console.WriteLine("Expected maximum: {0:10}", uint.MaxValue);
                         Console.WriteLine("Actual maximum:   {0:10} (delta: {1}, {2}%)", max, maxDelta, (100f * maxDelta) / uint.MaxValue);
                         Console.WriteLine("Expected minimum: 0");
@@ -96,7 +96,7 @@ namespace URandomGen.Tests
                         Console.WriteLine("1. Bitmap (saved in working dir as {0})", pathBitmap);
                         Console.WriteLine("2. Graphs, Scatterplot, and Histograms for first 1000 (saved in working dir as {0})", pathGraphs);
                         Console.WriteLine("3. Graphs, Scatterplot, and Histograms for All " + _maxVals + " (saved in working dir as {0})", pathGraphsBig);
-                        Console.WriteLine("X. Cancel");
+                        Console.WriteLine("X. Return");
                         key = ReadKey();
 
                         switch (key)
