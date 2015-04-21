@@ -141,10 +141,11 @@ namespace URandomGen
             }
 
             const uint mask = 0xfffffffe;
-            uint result = mask - x;
+            uint result = _seedArray[_curIndex] = mask - x;
 
             //Really unlikely edge-case, but why risk it?
-            _seedArray[_curIndex] = (result == 0 && prevSeed == 0) ? 1 : result;
+            if (_curIndex == 0 && _carry == 0 && IsAllZero(_seedArray))
+                _seedArray[0] = 1;
 
             return result;
         }

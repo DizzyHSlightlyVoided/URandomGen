@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
@@ -70,6 +71,12 @@ namespace URandomGen
         public static uint DefaultSingleSeed()
         {
             return (uint)DateTime.Now.Ticks;
+        }
+
+        internal static bool IsAllZero(IEnumerable<uint> seeds)
+        {
+            using (IEnumerator<uint> enumerator = seeds.Where(i => i != 0).GetEnumerator())
+                return !enumerator.MoveNext();
         }
 
         /// <summary>

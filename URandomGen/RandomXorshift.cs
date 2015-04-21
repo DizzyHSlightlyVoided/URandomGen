@@ -128,10 +128,11 @@ namespace URandomGen
             uint seedX = _seedArray[_curIndex];
             uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
 
-            uint result = _generate(seedX, seedW) * 69069;
+            uint result = _seedArray[_curIndex] = _generate(seedX, seedW) * 69069;
 
             //Really unlikely edge-case, but why risk it?
-            _seedArray[_curIndex] = result == 0 ? 1 : result;
+            if (_curIndex == 0 && IsAllZero(_seedArray))
+                _seedArray[0] = 1;
 
             return result;
         }
