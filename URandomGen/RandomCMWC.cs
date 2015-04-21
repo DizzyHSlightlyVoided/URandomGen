@@ -43,13 +43,11 @@ namespace URandomGen
     /// </summary>
     public class RandomCMWC : RandomGen
     {
-        // According to George Marsaglia's 2003 paper, the default "carry" should be a random number less than this value.
-        private const uint _cMod = 809430660u;
 
         private const int _seedCount = 4096;
         private const int _seedMask = 4095;
         private uint[] _seedArray;
-        private int _curIndex = _seedMask;
+        private int _curIndex;
         private uint _carry;
 
         /// <summary>
@@ -61,22 +59,31 @@ namespace URandomGen
         /// </exception>
         public RandomCMWC(IEnumerable<uint> seeds)
         {
+            if (seeds == null) throw new ArgumentNullException("seeds");
             _seedArray = new uint[_seedCount];
+            _curIndex = _seedMask;
 
-            uint curCount = CopyToArray(seeds, _seedArray);
+            const uint phi = 0x9E3779B9;
 
-            for (uint i = curCount; i < _seedCount; i++)
+            uint curCount = 0, prev1 = 0, prev2 = 0, prev3 = 0;
+            foreach (uint c in seeds)
             {
-                const uint phi = 0x9E3779B9;
-                if (i == 0)
-                    _seedArray[0] = 0;
-                else if (i < 3)
-                    _seedArray[i] = _seedArray[i - 1] + phi;
-                else
-                    _seedArray[i] = (_seedArray[i - 3] ^ _seedArray[i - 2] ^ phi ^ i) * i;
+                uint curVal = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += (prev2 ^ prev3 ^ phi ^ c) * (curCount + c);
+                curCount++;
+                prev3 = prev2;
+                prev2 = prev1;
+                prev1 = curVal;
+                _carry += curVal;
             }
 
-            _carry = (_seedArray[0] + _seedArray[curCount - 1]) % _cMod;
+            // According to George Marsaglia's 2003 post, the default "carry" should be a random number less than this value.
+            _carry %= 809430660u;
+
+            for (int i = 0; i < _seedCount; i++)
+            {
+                SampleUInt32();
+                _seedArray[_curIndex] += ~phi;
+            }
         }
 
         /// <summary>
@@ -107,6 +114,7 @@ namespace URandomGen
             : this((IEnumerable<uint>)DefaultSeeds())
         {
         }
+
 
         /// <summary>
         /// This method is used by other methods to generate random numbers.

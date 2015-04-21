@@ -34,6 +34,7 @@ See http://creativecommons.org/ and LICENSE-ThirdParty.md for more information.
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace URandomGen
@@ -58,23 +59,26 @@ namespace URandomGen
         /// </exception>
         public RandomXorshift(IEnumerable<uint> seeds)
         {
+            if (seeds == null) throw new ArgumentNullException("seeds");
             _seedArray = new uint[_seedCount];
-            uint curCount = CopyToArray(seeds, _seedArray);
+            _curIndex = _seedMask;
 
-            for (uint i = curCount; i < _seedCount; i++)
+            uint curCount = 0, prev = 0;
+
+            foreach (uint c in seeds)
             {
-                switch (i)
-                {
-                    case 0:
-                        _seedArray[0] = _seedCount;
-                        break;
-                    case 1:
-                        _seedArray[1] = _seedArray[0] + _seedMask;
-                        break;
-                    default:
-                        _seedArray[i] = curCount + (i * _generate(_seedArray[i - 2], _seedArray[i - 1]));
-                        break;
-                }
+                uint curVal = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += c + (uint)(curCount * (_generate(c, prev) + c));
+
+                curCount++;
+                prev = curVal;
+            }
+
+            for (int i = 0; i < _seedCount; i++)
+            {
+                uint seedX = _seedArray[_curIndex];
+                uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
+
+                _seedArray[_curIndex] = _generate(seedX, seedW) * 413612;
             }
         }
 
@@ -106,6 +110,7 @@ namespace URandomGen
             : this((IEnumerable<uint>)DefaultSeeds())
         {
         }
+
 
         private static uint _generate(uint seedX, uint seedW)
         {

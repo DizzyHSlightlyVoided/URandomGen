@@ -72,24 +72,6 @@ namespace URandomGen
             return (uint)DateTime.Now.Ticks;
         }
 
-        internal uint CopyToArray(IEnumerable<uint> seeds, uint[] destination)
-        {
-            if (seeds == null) throw new ArgumentNullException("seeds");
-
-            uint count = 0;
-            bool allZero = true;
-            foreach (uint curVal in seeds)
-            {
-                destination[count++] = curVal;
-                if (curVal != 0) allZero = false;
-                if (count >= destination.Length) break;
-            }
-
-            if (allZero) destination[0] = count;
-
-            return count;
-        }
-
         /// <summary>
         /// When overridden in a derived class, this method is used by other methods to generate random 32-bit numbers.
         /// </summary>
