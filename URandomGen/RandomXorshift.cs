@@ -72,17 +72,16 @@ namespace URandomGen
                 curCount++;
             }
 
-            if (IsAllZero(_seedArray))
+            if (IsNextThreeZero(_seedArray, _curIndex))
                 prev = _seedArray[_curIndex] = uint.MaxValue / 3;
 
             for (int i = 0; i < (_seedCount * 2); i++)
             {
                 uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
 
-                prev = _seedArray[_curIndex] = (_generate(prev, seedW) * 413612) + (ushort.MaxValue * 3);
+                uint result = (_generate(prev, seedW) * 413612) + (ushort.MaxValue * 3);
+                prev = _seedArray[_curIndex] = (prev == 0 && result == 0) ? uint.MaxValue / 5 : result;
             }
-            if (IsAllZero(_seedArray))
-                _seedArray[_curIndex] = uint.MaxValue / 3;
         }
 
         /// <summary>
@@ -133,9 +132,9 @@ namespace URandomGen
 
             uint result = _seedArray[_curIndex] = _generate(seedX, seedW) * 69069;
 
-            //Really unlikely edge-case, but why risk it?
-            if (_curIndex == 0 && IsAllZero(_seedArray)) //TODO: I'm not too sure this is the best way to deal with this ...
-                _seedArray[0] = 1111111;
+            //Really unlikely edge-case, and the circumstances where it would even be an issue are rare as all get out, but why risk it?
+            if (IsNextThreeZero(_seedArray, _curIndex))
+                _seedArray[_curIndex] = uint.MaxValue / 7;
 
             return result;
         }

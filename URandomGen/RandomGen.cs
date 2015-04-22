@@ -73,10 +73,18 @@ namespace URandomGen
             return (uint)DateTime.Now.Ticks;
         }
 
-        internal static bool IsAllZero(IEnumerable<uint> seeds)
+        internal static bool IsNextThreeZero(uint[] seeds, int curIndex)
         {
-            using (IEnumerator<uint> enumerator = seeds.Where(i => i != 0).GetEnumerator())
+            using (IEnumerator<uint> enumerator = ArrayOffset(seeds, curIndex).Take(3).Where(i => i != 0).GetEnumerator())
                 return !enumerator.MoveNext();
+        }
+
+        internal static IEnumerable<T> ArrayOffset<T>(T[] array, int offset)
+        {
+            for (int i = offset; i < array.Length; i++)
+                yield return array[i];
+            for (int i = 0; i < offset; i++)
+                yield return array[i];
         }
 
         /// <summary>

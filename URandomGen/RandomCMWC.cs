@@ -75,7 +75,7 @@ namespace URandomGen
                 _carry += curVal;
             }
 
-            if (IsAllZero(_seedArray))
+            if (IsNextThreeZero(_seedArray, _curIndex))
                 prev1 = _seedArray[_curIndex] = uint.MaxValue / 7;
             // According to George Marsaglia's 2003 post, the default "carry" should be a random number less than this value.
             else _carry %= 809430660u;
@@ -87,7 +87,7 @@ namespace URandomGen
                 prev1 = _seedArray[_curIndex] = _generate(prev1, seed) + ~phi;
             }
 
-            if (IsAllZero(_seedArray))
+            if (IsNextThreeZero(_seedArray, _curIndex))
                 _seedArray[_curIndex] = uint.MaxValue / 5;
         }
 
@@ -128,14 +128,13 @@ namespace URandomGen
         protected override uint SampleUInt32()
         {
             uint prevSeed = _seedArray[_curIndex];
-            //Use multiple seeds, in order to mitigate the effects of successive zero-values.
             uint seed = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
 
             uint result = _seedArray[_curIndex] = _generate(prevSeed, seed);
 
-            //Really unlikely edge-case, but why risk it?
-            if (_curIndex == 0 && IsAllZero(_seedArray)) //TODO: I'm not too sure this is the best way to deal with this ...
-                _seedArray[0] = 11111111;
+            //Really unlikely edge-case, and the circumstances where it would even be an issue are rare as all get out, but why risk it?
+            if (IsNextThreeZero(_seedArray, _curIndex))
+                _seedArray[_curIndex] = 11111111;
 
             return result;
         }
