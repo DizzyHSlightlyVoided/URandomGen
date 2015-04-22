@@ -43,7 +43,6 @@ namespace URandomGen
     /// </summary>
     public class RandomCMWC : RandomGen
     {
-
         private const int _seedCount = 4096;
         private const int _seedMask = 4095;
         private uint[] _seedArray;
@@ -68,7 +67,7 @@ namespace URandomGen
             uint curCount = 0, prev1 = 0, prev2 = 0, prev3 = 0;
             foreach (uint c in seeds)
             {
-                uint curVal = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += (prev2 ^ prev3 ^ phi ^ c) * (curCount + c);
+                uint curVal = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += (prev2 ^ prev3 ^ phi ^ c) + curCount + c;
                 curCount++;
                 prev3 = prev2;
                 prev2 = prev1;
@@ -76,14 +75,20 @@ namespace URandomGen
                 _carry += curVal;
             }
 
+            if (IsAllZero(_seedArray))
+                prev1 = _seedArray[_curIndex] = uint.MaxValue / 7;
             // According to George Marsaglia's 2003 post, the default "carry" should be a random number less than this value.
-            _carry %= 809430660u;
+            else _carry %= 809430660u;
 
-            for (int i = 0; i < _seedCount; i++)
+            for (int i = 0; i < (_seedCount + 1); i++)
             {
-                SampleUInt32();
-                _seedArray[_curIndex] += ~phi;
+                uint seed = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
+
+                prev1 = _seedArray[_curIndex] = _generate(prev1, seed) + ~phi;
             }
+
+            if (IsAllZero(_seedArray))
+                _seedArray[_curIndex] = uint.MaxValue / 5;
         }
 
         /// <summary>
@@ -123,9 +128,20 @@ namespace URandomGen
         protected override uint SampleUInt32()
         {
             uint prevSeed = _seedArray[_curIndex];
-
             //Use multiple seeds, in order to mitigate the effects of successive zero-values.
             uint seed = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
+
+            uint result = _seedArray[_curIndex] = _generate(prevSeed, seed);
+
+            //Really unlikely edge-case, but why risk it?
+            if (_curIndex == 0 && IsAllZero(_seedArray)) //TODO: I'm not too sure this is the best way to deal with this ...
+                _seedArray[0] = 11111111;
+
+            return result;
+        }
+
+        private uint _generate(uint prevSeed, uint seed)
+        {
             seed ^= prevSeed;
 
             const ulong multiplier = 18782UL;
@@ -141,13 +157,7 @@ namespace URandomGen
             }
 
             const uint mask = 0xfffffffe;
-            uint result = _seedArray[_curIndex] = mask - x;
-
-            //Really unlikely edge-case, but why risk it?
-            if (_curIndex == 0 && _carry == 0 && IsAllZero(_seedArray))
-                _seedArray[0] = 1;
-
-            return result;
+            return mask - x;
         }
     }
 }

@@ -67,19 +67,22 @@ namespace URandomGen
 
             foreach (uint c in seeds)
             {
-                uint curVal = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += c + (uint)(curCount * (_generate(c, prev) + c));
+                prev = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += c + (curCount * (_generate(c, prev) + c));
 
                 curCount++;
-                prev = curVal;
             }
 
-            for (int i = 0; i < _seedCount; i++)
+            if (IsAllZero(_seedArray))
+                prev = _seedArray[_curIndex] = uint.MaxValue / 3;
+
+            for (int i = 0; i < (_seedCount * 2); i++)
             {
-                uint seedX = _seedArray[_curIndex];
                 uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
 
-                _seedArray[_curIndex] = _generate(seedX, seedW) * 413612;
+                prev = _seedArray[_curIndex] = (_generate(prev, seedW) * 413612) + (ushort.MaxValue * 3);
             }
+            if (IsAllZero(_seedArray))
+                _seedArray[_curIndex] = uint.MaxValue / 3;
         }
 
         /// <summary>
@@ -131,8 +134,8 @@ namespace URandomGen
             uint result = _seedArray[_curIndex] = _generate(seedX, seedW) * 69069;
 
             //Really unlikely edge-case, but why risk it?
-            if (_curIndex == 0 && IsAllZero(_seedArray))
-                _seedArray[0] = 1;
+            if (_curIndex == 0 && IsAllZero(_seedArray)) //TODO: I'm not too sure this is the best way to deal with this ...
+                _seedArray[0] = 1111111;
 
             return result;
         }
