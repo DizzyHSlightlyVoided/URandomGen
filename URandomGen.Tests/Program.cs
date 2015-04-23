@@ -99,13 +99,13 @@ namespace URandomGen.Tests
                 {
                     Console.Write("Generating ... ");
 
-                    int[] results = new int[_maxVals];
+                    uint[] results = new uint[_maxVals];
 
-                    int min = int.MaxValue, max = 0;
+                    uint min = uint.MaxValue, max = 0;
 
                     for (int i = 0; i < _maxVals; i++)
                     {
-                        int curVal = results[i] = generator.Next();
+                        uint curVal = results[i] = RandomGen.NextUInt32(generator);
                         min = Math.Min(curVal, min);
                         max = Math.Max(curVal, max);
                     }
@@ -114,8 +114,8 @@ namespace URandomGen.Tests
 
                     Console.WriteLine("done.");
 
-                    const int maxEq1 = int.MaxValue - 1;
-                    const int baseMedian = maxEq1 / 2;
+                    const uint maxEq1 = uint.MaxValue;
+                    const uint baseMedian = maxEq1 / 2;
                     const double maxInt = maxEq1;
 
                     Bitmap bmpBitmap = null, bmpGraphs = null, bmpGraphsBig = null;
@@ -136,7 +136,7 @@ namespace URandomGen.Tests
                         Console.WriteLine("Expected minimum: 0");
                         Console.WriteLine("Actual minimum:   {0:F5} (delta: {1:F5}, {2:F5}%)", minDelta, minDelta, (100f * minDelta));
                         Console.WriteLine("Expected average: 0.5");
-                        Console.WriteLine("Actual average:   {0:F5} (delta: {1:F5}, {2:F5}%)", avg / maxInt, avgDelta, (100 * avgDelta) / baseMedian);
+                        Console.WriteLine("Actual average:   {0:F5} (delta: {1:F5}, {2:F5}%)", avg / maxInt, avgDelta, (100 * avgDelta));
                         Console.WriteLine();
 
                         Console.WriteLine("1. Bitmap (saved in working dir as {0})", pathBitmap);
@@ -159,7 +159,7 @@ namespace URandomGen.Tests
 
                                         unsafe
                                         {
-                                            int* pStart = (int*)bitLock.Scan0;
+                                            uint* pStart = (uint*)bitLock.Scan0;
 
                                             for (int i = 0; i < _maxVals; i++)
                                                 pStart[i] = results[i];
@@ -242,14 +242,14 @@ namespace URandomGen.Tests
             return info.Key;
         }
 
-        private static void buildGraph(IEnumerable<int> resultCollect, string path, ref Bitmap bmp)
+        private static void buildGraph(IEnumerable<uint> resultCollect, string path, ref Bitmap bmp)
         {
             if (bmp == null || !File.Exists(path))
             {
                 if (bmp == null)
                 {
-                    const int maxDiv = int.MaxValue;
-                    int[] results = resultCollect is int[] ? (int[])resultCollect : resultCollect.ToArray();
+                    const long maxDiv = uint.MaxValue + 1L;
+                    uint[] results = resultCollect is uint[] ? (uint[])resultCollect : resultCollect.ToArray();
 
                     const long histLength = 10;
                     int[] histogram = new int[histLength];
