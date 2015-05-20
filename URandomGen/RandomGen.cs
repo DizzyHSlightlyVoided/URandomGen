@@ -606,13 +606,40 @@ namespace URandomGen
                 buffer[i] = (byte)generator.Next(1, maxBytes);
         }
 
-        private static int TryGetCount<T>(IEnumerable<T> collection)
+        private static bool TryGetCount<T>(IEnumerable<T> collection, out int count)
         {
             if (collection is ICollection<T>)
-                return ((ICollection<T>)collection).Count;
+            {
+                count = ((ICollection<T>)collection).Count;
+                return true;
+            }
             if (collection is System.Collections.ICollection)
-                return ((System.Collections.ICollection)collection).Count;
-            return 0;
+            {
+                count = ((System.Collections.ICollection)collection).Count;
+                return true;
+            }
+            count = 0;
+            return false;
+        }
+
+        private static void _shuffleArray<T>(Random generator, T[] array, int startIndex, int length)
+        {
+            int next;
+
+            for (int i = 0, iPos = startIndex; i < length; i = next, iPos++)
+            {
+                next = i + 1;
+                int j = i == 0 ? 0 : generator.Next(0, next);
+
+                if (i == j)
+                    continue;
+
+                j += startIndex;
+
+                T item = array[iPos];
+                array[iPos] = array[j];
+                array[j] = item;
+            }
         }
 
         /// <summary>
@@ -633,17 +660,33 @@ namespace URandomGen
             Contract.Ensures(Contract.Result<List<T>>() != null);
             Contract.EndContractBlock();
 
-            List<T> list = new List<T>(TryGetCount<T>(collection));
-            using (IEnumerator<T> enumerator = collection.GetEnumerator())
+            int count;
+            if (TryGetCount<T>(collection, out count))
             {
-                if (!enumerator.MoveNext())
-                    return new T[0];
-                list.Add(enumerator.Current);
+                T[] list = new T[count];
+                if (count == 0) return list;
+                count = 0;
 
-                while (enumerator.MoveNext())
-                    list.Insert(generator.Next(list.Count), enumerator.Current);
+                foreach (T item in collection)
+                {
+                    int next = count + 1;
+                    int j = count == 0 ? 0 : generator.Next(0, next);
+
+                    if (j == count)
+                    {
+                        list[count] = item;
+                        count = next;
+                        continue;
+                    }
+                    list[count] = list[j];
+                    list[j] = item;
+                    count = next;
+                }
+                return list;
             }
-            return list.ToArray();
+            T[] array = collection.ToArray();
+            _shuffleArray<T>(generator, array, 0, array.Length);
+            return array;
         }
 
         /// <summary>
@@ -658,6 +701,37 @@ namespace URandomGen
         public T[] Shuffle<T>(IEnumerable<T> collection)
         {
             return Shuffle<T>(this, collection);
+        }
+
+        /// <summary>
+        /// Shuffles all elements in the specified array.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the array.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="array">The array whose elements will be shuffled.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="array"/> is <c>null</c>.
+        /// </exception>
+        public static void ShuffleArray<T>(Random generator, T[] array)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            if (array == null) throw new ArgumentNullException("array");
+            Contract.EndContractBlock();
+
+            _shuffleArray<T>(generator, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Shuffles all elements in the specified array.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the array.</typeparam>
+        /// <param name="array">The array whose elements will be shuffled.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> is <c>null</c>.
+        /// </exception>
+        public void ShuffleArray<T>(T[] array)
+        {
+            ShuffleArray<T>(this, array);
         }
     }
 }
