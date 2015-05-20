@@ -88,6 +88,27 @@ namespace URandomGen.Tests
                             if (good) Console.WriteLine("All tests passed.");
 
                             Console.WriteLine();
+                            Console.WriteLine("Testing whether Shuffle and ArrayShuffle give the same results ...");
+                            int[] array1 = Iteration().ToArray();
+                            int[] array2 = array1;
+                            Console.WriteLine("Original:     " + string.Join<int>(", ", array1));
+                            Random random1 = new Random(1);
+                            Random random2 = new Random(1);
+                            array1 = RandomGen.Shuffle<int>(random1, array1);
+                            Console.WriteLine("Shuffle:      " + string.Join<int>(", ", array1));
+                            RandomGen.ShuffleArray<int>(random2, array2);
+                            Console.WriteLine("ArrayShuffle: " + string.Join<int>(", ", array2));
+                            List<int> errors = new List<int>(array1.Length);
+                            for (int i = 0; i < array1.Length; i++)
+                            {
+                                if (array1[i] != array2[i])
+                                    errors.Add(i);
+                            }
+                            if (errors.Count == 0)
+                                Console.WriteLine("Both shuffle methods are equivalent!");
+                            else
+                                Console.WriteLine("Failed starting at index " + errors.Count);
+                            Console.WriteLine();
                         }
                         break;
                     default:
