@@ -34,7 +34,6 @@ See http://creativecommons.org/ and LICENSE-ThirdParty.md for more information.
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace URandomGen
