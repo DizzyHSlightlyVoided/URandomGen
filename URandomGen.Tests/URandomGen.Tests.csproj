@@ -10,8 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>URandomGen.Tests</RootNamespace>
     <AssemblyName>URandomGen.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -33,9 +32,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\URandomGen\URandomGen.csproj">
-      <Project>{BE5CBF04-F927-4F39-8E8A-88F3DDF31999}</Project>
-      <Name>URandomGen</Name>
+    <ProjectReference Include="..\URandomGen\URandomGen.Net45.csproj">
+      <Project>{eb1c2094-ad9c-4c0c-b7e0-d13d13891f39}</Project>
+      <Name>URandomGen.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

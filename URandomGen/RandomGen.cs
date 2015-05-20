@@ -618,6 +618,13 @@ namespace URandomGen
                 count = ((System.Collections.ICollection)collection).Count;
                 return true;
             }
+#if NET_4_5
+            if (collection is IReadOnlyCollection<T>)
+            {
+                count = ((IReadOnlyCollection<T>)collection).Count;
+                return true;
+            }
+#endif
             count = 0;
             return false;
         }
