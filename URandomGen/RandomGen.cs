@@ -595,7 +595,7 @@ namespace URandomGen
         /// </exception>
         public static void NextNonZeroBytes(Random generator, byte[] buffer)
         {
-            if (generator == null) throw new ArgumentNullException("buffer");
+            if (generator == null) throw new ArgumentNullException("generator");
             if (buffer == null) throw new ArgumentNullException("buffer");
 
             Contract.Ensures(Array.IndexOf(Contract.ValueAtReturn(out buffer), 0) < 0);
