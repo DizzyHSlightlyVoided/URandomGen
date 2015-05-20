@@ -605,5 +605,59 @@ namespace URandomGen
             for (int i = 0; i < buffer.Length; i++)
                 buffer[i] = (byte)generator.Next(1, maxBytes);
         }
+
+        private static int TryGetCount<T>(IEnumerable<T> collection)
+        {
+            if (collection is ICollection<T>)
+                return ((ICollection<T>)collection).Count;
+            if (collection is System.Collections.ICollection)
+                return ((System.Collections.ICollection)collection).Count;
+            return 0;
+        }
+
+        /// <summary>
+        /// Returns all elements in the specified collection in random order.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">The collection whose elements will be shuffled.</param>
+        /// <returns>A list containing the shuffled elements in <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        public static T[] Shuffle<T>(Random generator, IEnumerable<T> collection)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            if (collection == null) throw new ArgumentNullException("collection");
+
+            Contract.Ensures(Contract.Result<List<T>>() != null);
+            Contract.EndContractBlock();
+
+            List<T> list = new List<T>(TryGetCount<T>(collection));
+            using (IEnumerator<T> enumerator = collection.GetEnumerator())
+            {
+                if (!enumerator.MoveNext())
+                    return new T[0];
+                list.Add(enumerator.Current);
+
+                while (enumerator.MoveNext())
+                    list.Insert(generator.Next(list.Count), enumerator.Current);
+            }
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// Returns all elements in the specified collection in random order.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="collection">The collection whose elements will be shuffled.</param>
+        /// <returns>A list containing the shuffled elements in <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        public T[] Shuffle<T>(IEnumerable<T> collection)
+        {
+            return Shuffle<T>(this, collection);
+        }
     }
 }
