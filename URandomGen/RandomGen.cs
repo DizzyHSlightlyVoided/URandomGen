@@ -30,7 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Collections.Generic;
+#if !NOCONTRACT
 using System.Diagnostics.Contracts;
+#endif
 using System.Linq;
 
 namespace URandomGen
@@ -131,10 +133,11 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 base.Next(minValue, maxValue); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<int>() >= minValue);
             Contract.Ensures(Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             long length = maxValue - (long)minValue;
 
             return (int)(minValue + _sampleValue(this, length));
@@ -152,10 +155,11 @@ namespace URandomGen
         {
             if (maxValue < 0)
                 base.Next(maxValue); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<int>() >= 0);
             Contract.Ensures(Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (int)_sampleValue(this, maxValue);
         }
 
@@ -182,10 +186,11 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<uint>() >= minValue);
             Contract.Ensures(Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             long length = maxValue - (long)minValue;
 
             return (uint)(minValue + _sampleValue(this, length));
@@ -201,10 +206,11 @@ namespace URandomGen
         /// </exception>
         public uint NextUInt32(uint maxValue)
         {
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<uint>() >= 0);
             Contract.Ensures(Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (uint)_sampleValue(this, maxValue);
         }
 
@@ -254,10 +260,11 @@ namespace URandomGen
             if (generator == null) throw new ArgumentNullException("generator");
             if (minValue > maxValue)
                 generator.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<uint>() >= minValue);
             Contract.Ensures(Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return _nextUInt32(generator, minValue, maxValue);
         }
 
@@ -278,10 +285,11 @@ namespace URandomGen
             if (generator == null) throw new ArgumentNullException("generator");
             if (maxValue < 0)
                 generator.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<uint>() >= 0);
             Contract.Ensures(Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return _nextUInt32(generator, 0, maxValue);
         }
 
@@ -347,10 +355,11 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<long>() >= minValue);
             Contract.Ensures(Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             decimal length = (decimal)maxValue - minValue;
 
             return (long)(_sampleValue(this, length) + minValue);
@@ -368,10 +377,11 @@ namespace URandomGen
         {
             if (maxValue < 0)
                 base.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<long>() >= 0);
             Contract.Ensures(Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (long)_sampleValue(this, (decimal)maxValue);
         }
 
@@ -401,10 +411,11 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 generator.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<long>() >= minValue);
             Contract.Ensures(Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (long)_next64(generator, minValue, maxValue);
         }
 
@@ -424,10 +435,11 @@ namespace URandomGen
         {
             if (maxValue < 0)
                 generator.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<long>() >= 0);
             Contract.Ensures(Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (long)_next64(generator, 0, maxValue);
         }
 
@@ -458,10 +470,11 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<ulong>() >= minValue);
             Contract.Ensures(Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             decimal length = (decimal)maxValue - minValue;
 
             return (ulong)(_sampleValue(this, length) + minValue);
@@ -477,10 +490,11 @@ namespace URandomGen
         /// </exception>
         public ulong NextUInt64(ulong maxValue)
         {
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<ulong>() >= 0);
             Contract.Ensures(Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (ulong)_sampleValue(this, (decimal)maxValue);
         }
 
@@ -510,10 +524,11 @@ namespace URandomGen
         {
             if (minValue > maxValue)
                 generator.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<ulong>() >= minValue);
             Contract.Ensures(Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
-
+#endif
             return (ulong)_next64(generator, minValue, maxValue);
         }
 
@@ -533,9 +548,11 @@ namespace URandomGen
         {
             if (maxValue < 0)
                 generator.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<ulong>() >= 0);
             Contract.Ensures(Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
+#endif
             var value = _next64(generator, 0, maxValue);
             return (ulong)value;
         }
@@ -564,9 +581,9 @@ namespace URandomGen
         public override void NextBytes(byte[] buffer)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
-
+#if !NOCONTRACT
             Contract.EndContractBlock();
-
+#endif
             const int maxBytes = byte.MaxValue + 1;
 
             for (int i = 0; i < buffer.Length; i++)
@@ -597,10 +614,10 @@ namespace URandomGen
         {
             if (generator == null) throw new ArgumentNullException("generator");
             if (buffer == null) throw new ArgumentNullException("buffer");
-
+#if !NOCONTRACT
             Contract.Ensures(Array.IndexOf(Contract.ValueAtReturn(out buffer), 0) < 0);
             Contract.EndContractBlock();
-
+#endif
             const int maxBytes = byte.MaxValue + 1;
             for (int i = 0; i < buffer.Length; i++)
                 buffer[i] = (byte)generator.Next(1, maxBytes);
@@ -663,10 +680,10 @@ namespace URandomGen
         {
             if (generator == null) throw new ArgumentNullException("generator");
             if (collection == null) throw new ArgumentNullException("collection");
-
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<List<T>>() != null);
             Contract.EndContractBlock();
-
+#endif
             int count;
             if (TryGetCount<T>(collection, out count))
             {
@@ -723,8 +740,9 @@ namespace URandomGen
         {
             if (generator == null) throw new ArgumentNullException("generator");
             if (array == null) throw new ArgumentNullException("array");
+#if !NOCONTRACT
             Contract.EndContractBlock();
-
+#endif
             _shuffleArray<T>(generator, array, 0, array.Length);
         }
 

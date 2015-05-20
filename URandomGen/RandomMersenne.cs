@@ -32,7 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Collections.Generic;
+#if !NOCONTRACT
 using System.Diagnostics.Contracts;
+#endif
 using System.Linq;
 
 namespace URandomGen
@@ -135,15 +137,19 @@ namespace URandomGen
         private static int _arrayLen(uint[] seeds)
         {
             if (seeds == null) throw new ArgumentNullException("seeds");
+#if !NOCONTRACT
             Contract.Ensures(Contract.Result<int>() >= 0);
             Contract.EndContractBlock();
+#endif
             return seeds.Length;
         }
 
         private static uint[] _toArray(IEnumerable<uint> seeds)
         {
             if (seeds == null) throw new ArgumentNullException("seeds");
+#if !NOCONTRACT
             Contract.EndContractBlock();
+#endif
             if (seeds is uint[]) return (uint[])seeds;
             return seeds.ToArray();
         }
