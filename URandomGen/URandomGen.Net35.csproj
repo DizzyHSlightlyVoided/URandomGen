@@ -26,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NOCONTRACTS</DefineConstants>
+    <DefineConstants>TRACE;NET_3_5;NOCONTRACT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Net 3.5\Release\URandomGen.XML</DocumentationFile>
