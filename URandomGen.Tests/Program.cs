@@ -142,6 +142,7 @@ namespace URandomGen.Tests
                         Console.WriteLine("1. Bitmap (saved in working dir as {0})", pathBitmap);
                         Console.WriteLine("2. Graphs, Scatterplot, and Histograms for first 1000 (saved in working dir as {0})", pathGraphs);
                         Console.WriteLine("3. Graphs, Scatterplot, and Histograms for All " + _maxVals + " (saved in working dir as {0})", pathGraphsBig);
+                        Console.WriteLine("4. Shuffle test");
                         Console.WriteLine("X. Return");
                         key = ReadKey();
 
@@ -176,6 +177,14 @@ namespace URandomGen.Tests
                             case ConsoleKey.D3:
                                 buildGraph(results, pathGraphsBig, ref bmpGraphsBig);
                                 break;
+                            case ConsoleKey.D4:
+                                {
+                                    IEnumerable<int> iteration = Iteration();
+                                    Console.WriteLine("Initial value: " + string.Join<int>(", ", iteration));
+                                    Console.WriteLine("Shuffled value: " + string.Join<int>(", ", RandomGen.Shuffle(generator, iteration)));
+                                    Console.WriteLine();
+                                }
+                                break;
                         }
                     }
                     while (key != ConsoleKey.X);
@@ -187,6 +196,12 @@ namespace URandomGen.Tests
 
             }
             while (key != ConsoleKey.X);
+        }
+
+        private static IEnumerable<int> Iteration()
+        {
+            for (int i = 0; i < 30; i++)
+                yield return i;
         }
 
         private static bool _testResult<T>(T min, T max, Func<T> genRand)
