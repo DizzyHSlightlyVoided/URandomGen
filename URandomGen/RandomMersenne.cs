@@ -35,7 +35,9 @@ using System.Collections.Generic;
 #if !NOCONTRACT
 using System.Diagnostics.Contracts;
 #endif
+#if !NOLINQ
 using System.Linq;
+#endif
 
 namespace URandomGen
 {
@@ -151,7 +153,11 @@ namespace URandomGen
             Contract.EndContractBlock();
 #endif
             if (seeds is uint[]) return (uint[])seeds;
+#if NOLINQ
+            return ToArray<uint>(seeds);
+#else
             return seeds.ToArray();
+#endif
         }
 
         /// <summary>

@@ -33,7 +33,9 @@ using System.Collections.Generic;
 #if !NOCONTRACT
 using System.Diagnostics.Contracts;
 #endif
+#if !NOLINQ
 using System.Linq;
+#endif
 
 namespace URandomGen
 {
@@ -77,10 +79,52 @@ namespace URandomGen
 
         internal static bool IsNextThreeZero(uint[] seeds, int curIndex)
         {
+#if NOLINQ
+            int count = 0;
+            foreach (uint curItem in ArrayOffset(seeds, curIndex))
+            {
+                if (curItem != 0) return false;
+
+                if (++count >= 3) break;
+            }
+            return true;
+#else
             using (IEnumerator<uint> enumerator = ArrayOffset(seeds, curIndex).Take(3).Where(i => i != 0).GetEnumerator())
                 return !enumerator.MoveNext();
+#endif
         }
+#if NOLINQ
+        internal static T[] ToArray<T>(IEnumerable<T> collection)
+        {
+            if (collection is ICollection<T>)
+            {
+                T[] array = new T[((ICollection<T>)collection).Count];
+                ((ICollection<T>)collection).CopyTo(array, 0);
+                return array;
+            }
+            if (collection is System.Collections.ICollection)
+            {
+                T[] array = new T[((System.Collections.ICollection)collection).Count];
+                ((System.Collections.ICollection)collection).CopyTo(array, 0);
+                return array;
+            }
 
+            T[] buffer = new T[16];
+            int curCount = 0;
+            foreach (T item in collection)
+            {
+                if (curCount >= buffer.Length)
+                    Array.Resize<T>(ref buffer, checked(buffer.Length * 2));
+
+                buffer[curCount++] = item;
+            }
+
+            if (buffer.Length != curCount)
+                Array.Resize(ref buffer, curCount);
+
+            return buffer;
+        }
+#endif
         internal static IEnumerable<T> ArrayOffset<T>(T[] array, int offset)
         {
             for (int i = offset; i < array.Length; i++)
@@ -708,7 +752,11 @@ namespace URandomGen
                 }
                 return list;
             }
+#if NOLINQ
+            T[] array = ToArray<T>(collection);
+#else
             T[] array = collection.ToArray();
+#endif
             _shuffleArray<T>(generator, array, 0, array.Length);
             return array;
         }
