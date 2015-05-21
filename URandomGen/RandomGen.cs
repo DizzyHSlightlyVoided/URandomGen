@@ -57,7 +57,7 @@ namespace URandomGen
 
             uint[] seeds = new uint[]
             {
-                (uint)tickCount,
+                tickCount,
                 (uint)(nowTicks >> 32),
                 (uint)nowTicks,
                 0
@@ -283,7 +283,7 @@ namespace URandomGen
 
             uint result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
 
-            return (uint)((length * result) / max32);
+            return (uint)((length * result) / max32) + minValue;
         }
 
         /// <summary>
@@ -373,17 +373,17 @@ namespace URandomGen
 
             ulong result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
 
-            if (result <= uint.MaxValue)
+            if (length <= uint.MaxValue)
                 return (length * result) / max32;
 
             result |= (ulong)generator.Next(max16) << 32;
 
-            if (result < max48)
+            if (length < max48)
                 return (length * result) / max48;
 
             result |= (ulong)generator.Next(max16) << 48;
 
-            return length * result / max64;
+            return ((length * result) / max64) + minValue;
         }
 
         /// <summary>
@@ -597,8 +597,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            var value = _next64(generator, 0, maxValue);
-            return (ulong)value;
+            return (ulong)_next64(generator, 0, maxValue);
         }
 
         /// <summary>
