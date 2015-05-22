@@ -289,25 +289,25 @@ namespace URandomGen.Tests
         private static bool _testStatic<T>(T min, T max, Func<Random, T, T, T> genRand)
             where T : struct, IComparable<T>
         {
-            bool result = true;
-            foreach (Random g in new Random[] { new RandomSequence(), new Random(1) })
-            {
-                Console.WriteLine("static RandomGen.{0}({1}, {2}, {3});", genRand.Method.Name, g is RandomGen ? "RandomGen" : "Random", min, max);
-                result &= _testResult<T>(min, max, () => genRand(g, min, max));
-            }
-            return result;
+            Console.WriteLine("static RandomGen.{0}(RandomGen, {1}, {2});", genRand.Method.Name, min, max);
+            Random generator = new RandomSequence();
+            bool result = _testResult<T>(min, max, () => genRand(generator, min, max));
+
+            Console.WriteLine("static RandomGen.{0}(Random, {1}, {2});", genRand.Method.Name, min, max);
+            generator = new Random(1);
+            return _testResult<T>(min, max, () => genRand(generator, min, max)) && result;
         }
 
         private static bool _testStatic<T>(T max, Func<Random, T, T> genRand)
             where T : struct, IComparable<T>
         {
-            bool result = true;
-            foreach (Random g in new Random[] { new RandomSequence(), new Random(1) })
-            {
-                Console.WriteLine("static RandomGen.{0}({1}, {2});", genRand.Method.Name, g is RandomGen ? "RandomGen" : "Random", max);
-                result &= _testResult<T>(default(T), max, () => genRand(g, max));
-            }
-            return result;
+            Console.WriteLine("static RandomGen.{0}(RandomGen, {1});", genRand.Method.Name, max);
+            Random generator = new RandomSequence();
+            bool result = _testResult<T>(default(T), max, () => genRand(generator, max));
+
+            Console.WriteLine("static RandomGen.{0}(Random, {1});", genRand.Method.Name, max);
+            generator = new Random(1);
+            return _testResult<T>(default(T), max, () => genRand(generator, max)) && result;
         }
 
         private static ConsoleKey ReadKey()
