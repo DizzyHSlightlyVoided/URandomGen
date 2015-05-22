@@ -77,45 +77,44 @@ namespace URandomGen.Tests
                         break;
                     case ConsoleKey.D5:
                         {
-                            RandomSequence rSeq = new RandomSequence();
                             Console.WriteLine("  Testing random whether random sequences properly fall in range:");
                             bool good = true;
 
-                            good &= _testResult(4, int.MaxValue - 4, rSeq.Next, "Next");
-                            good &= _testResult(1 << 24, rSeq.Next, "Next");
-                            good &= _testResult<int>(ushort.MaxValue, 1 << 24, rSeq.Next, "Next");
-                            good &= _testResult<int>(ushort.MaxValue, rSeq.Next, "Next");
-                            good &= _testResult<int>(413, 414, rSeq.Next, "Next");
-                            good &= _testResult<int>(413, 413, rSeq.Next, "Next");
+                            good &= _testLocal(4, int.MaxValue - 4, new RandomSequence().Next);
+                            good &= _testLocal(1 << 24, new RandomSequence().Next);
+                            good &= _testLocal<int>(ushort.MaxValue, 1 << 24, new RandomSequence().Next);
+                            good &= _testLocal<int>(ushort.MaxValue, new RandomSequence().Next);
+                            good &= _testLocal<int>(413, 414, new RandomSequence().Next);
+                            good &= _testLocal<int>(413, 413, new RandomSequence().Next);
 
-                            good &= _testResult<uint>(4u, uint.MaxValue - 4, rSeq.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(1u << 24, rSeq.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(ushort.MaxValue, 1u << 24, rSeq.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(ushort.MaxValue, rSeq.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(413, 414, rSeq.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(413, 413, rSeq.NextUInt32, "NextUInt32");
+                            good &= _testLocal<uint>(4u, uint.MaxValue - 4, new RandomSequence().NextUInt32);
+                            good &= _testLocal<uint>(1u << 24, new RandomSequence().NextUInt32);
+                            good &= _testLocal<uint>(ushort.MaxValue, 1u << 24, new RandomSequence().NextUInt32);
+                            good &= _testLocal<uint>(ushort.MaxValue, new RandomSequence().NextUInt32);
+                            good &= _testLocal<uint>(413, 414, new RandomSequence().NextUInt32);
+                            good &= _testLocal<uint>(413, 413, new RandomSequence().NextUInt32);
 
-                            good &= _testResult<uint>(4u, uint.MaxValue - 4, rSeq, RandomGen.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(1u << 24, rSeq, RandomGen.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(ushort.MaxValue, 1u << 24, rSeq, RandomGen.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(ushort.MaxValue, rSeq, RandomGen.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(413, 414, rSeq, RandomGen.NextUInt32, "NextUInt32");
-                            good &= _testResult<uint>(413, 413, rSeq, RandomGen.NextUInt32, "NextUInt32");
+                            good &= _testStatic<uint>(4u, uint.MaxValue - 4, RandomGen.NextUInt32);
+                            good &= _testStatic<uint>(1u << 24, RandomGen.NextUInt32);
+                            good &= _testStatic<uint>(ushort.MaxValue, 1u << 24, RandomGen.NextUInt32);
+                            good &= _testStatic<uint>(ushort.MaxValue, RandomGen.NextUInt32);
+                            good &= _testStatic<uint>(413, 414, RandomGen.NextUInt32);
+                            good &= _testStatic<uint>(413, 413, RandomGen.NextUInt32);
 
-                            good &= _testResult<long>(400, int.MaxValue + 1L, rSeq.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue + 1L, rSeq.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue, uint.MaxValue + 1L, rSeq.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue + 2L, rSeq.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue, uint.MaxValue, rSeq.Next64, "Next64");
+                            good &= _testLocal<long>(400, int.MaxValue + 1L, new RandomSequence().Next64);
+                            good &= _testLocal<long>(uint.MaxValue + 1L, new RandomSequence().Next64);
+                            good &= _testLocal<long>(uint.MaxValue, uint.MaxValue + 1L, new RandomSequence().Next64);
+                            good &= _testLocal<long>(uint.MaxValue + 2L, new RandomSequence().Next64);
+                            good &= _testLocal<long>(uint.MaxValue, uint.MaxValue, new RandomSequence().Next64);
 
-                            good &= _testResult<long>(400, int.MaxValue + 1L, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue + 1L, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue, uint.MaxValue + 1L, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue + 2L, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(uint.MaxValue, uint.MaxValue, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(long.MaxValue - 2L, long.MaxValue, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(0, long.MaxValue, rSeq, RandomGen.Next64, "Next64");
-                            good &= _testResult<long>(long.MaxValue, long.MaxValue, rSeq, RandomGen.Next64, "Next64");
+                            good &= _testStatic<long>(400, int.MaxValue + 1L, RandomGen.Next64);
+                            good &= _testStatic<long>(uint.MaxValue + 1L, RandomGen.Next64);
+                            good &= _testStatic<long>(uint.MaxValue, uint.MaxValue + 1L, RandomGen.Next64);
+                            good &= _testStatic<long>(uint.MaxValue + 2L, RandomGen.Next64);
+                            good &= _testStatic<long>(uint.MaxValue, uint.MaxValue, RandomGen.Next64);
+                            good &= _testStatic<long>(long.MaxValue - 2L, long.MaxValue, RandomGen.Next64);
+                            good &= _testStatic<long>(0, long.MaxValue, RandomGen.Next64);
+                            good &= _testStatic<long>(long.MaxValue, long.MaxValue, RandomGen.Next64);
 
                             if (good) Console.WriteLine("All tests passed.");
 
@@ -273,39 +272,39 @@ namespace URandomGen.Tests
             return returner;
         }
 
-        private static bool _testResult<T>(T min, T max, Func<T, T, T> genRand, string methodName)
+        private static bool _testLocal<T>(T min, T max, Func<T, T, T> genRand)
             where T : struct, IComparable<T>
         {
-            Console.WriteLine("RandomGen.{0}({1}, {2});", methodName, min, max);
+            Console.WriteLine("RandomGen.{0}({1}, {2});", genRand.Method.Name, min, max);
             return _testResult<T>(min, max, () => genRand(min, max));
         }
 
-        private static bool _testResult<T>(T max, Func<T, T> genRand, string methodName)
+        private static bool _testLocal<T>(T max, Func<T, T> genRand)
             where T : struct, IComparable<T>
         {
-            Console.WriteLine("RandomGen.{0}({1});", methodName, max);
+            Console.WriteLine("RandomGen.{0}({1});", genRand.Method.Name, max);
             return _testResult<T>(default(T), max, () => genRand(max));
         }
 
-        private static bool _testResult<T>(T min, T max, Random generator, Func<Random, T, T, T> genRand, string methodName)
+        private static bool _testStatic<T>(T min, T max, Func<Random, T, T, T> genRand)
             where T : struct, IComparable<T>
         {
             bool result = true;
-            foreach (Random g in new Random[] { generator, new Random(1) })
+            foreach (Random g in new Random[] { new RandomSequence(), new Random(1) })
             {
-                Console.WriteLine("static RandomGen.{0}({1}, {2}, {3});", methodName, g is RandomGen ? "RandomGen" : "Random", min, max);
+                Console.WriteLine("static RandomGen.{0}({1}, {2}, {3});", genRand.Method.Name, g is RandomGen ? "RandomGen" : "Random", min, max);
                 result &= _testResult<T>(min, max, () => genRand(g, min, max));
             }
             return result;
         }
 
-        private static bool _testResult<T>(T max, Random generator, Func<Random, T, T> genRand, string methodName)
+        private static bool _testStatic<T>(T max, Func<Random, T, T> genRand)
             where T : struct, IComparable<T>
         {
             bool result = true;
-            foreach (Random g in new Random[] { generator, new Random(1) })
+            foreach (Random g in new Random[] { new RandomSequence(), new Random(1) })
             {
-                Console.WriteLine("static RandomGen.{0}({1}, {2});", methodName, g is RandomGen ? "RandomGen" : "Random", max);
+                Console.WriteLine("static RandomGen.{0}({1}, {2});", genRand.Method.Name, g is RandomGen ? "RandomGen" : "Random", max);
                 result &= _testResult<T>(default(T), max, () => genRand(g, max));
             }
             return result;
@@ -478,7 +477,7 @@ namespace URandomGen.Tests
 
         public const int SeedCount = 64;
         private const int _seedMask = SeedCount - 1;
-        private int _curIndex = SeedCount;
+        private int _curIndex = _seedMask;
 
         protected override uint SampleUInt32()
         {
