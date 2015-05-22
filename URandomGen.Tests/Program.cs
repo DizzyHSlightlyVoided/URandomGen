@@ -34,6 +34,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace URandomGen.Tests
 {
@@ -115,6 +116,78 @@ namespace URandomGen.Tests
                             good &= _testStatic<long>(long.MaxValue - 2L, long.MaxValue, RandomGen.Next64);
                             good &= _testStatic<long>(0, long.MaxValue, RandomGen.Next64);
                             good &= _testStatic<long>(long.MaxValue, long.MaxValue, RandomGen.Next64);
+
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(4, int.MaxValue - 4, rGenSec, RandomGen.Next);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(1 << 24, rGenSec, RandomGen.Next);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(ushort.MaxValue, 1 << 24, rGenSec, RandomGen.Next);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(ushort.MaxValue, rGenSec, RandomGen.Next);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(413, 414, rGenSec, RandomGen.Next);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(413, 413, rGenSec, RandomGen.Next);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<int>(int.MinValue, int.MaxValue, rGenSec, RandomGen.Next);
+
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<uint>(4u, uint.MaxValue - 4, rGenSec, RandomGen.NextUInt32);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<uint>(1u << 24, rGenSec, RandomGen.NextUInt32);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<uint>(ushort.MaxValue, 1u << 24, rGenSec, RandomGen.NextUInt32);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<uint>(ushort.MaxValue, rGenSec, RandomGen.NextUInt32);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<uint>(413, 414, rGenSec, RandomGen.NextUInt32);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<uint>(413, 413, rGenSec, RandomGen.NextUInt32);
+
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(400, int.MaxValue + 1L, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(uint.MaxValue + 2L, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(long.MaxValue - 2L, long.MaxValue, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(0, long.MaxValue, rGenSec, RandomGen.Next64);
+                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                good &= _testRNG<long>(long.MaxValue, long.MaxValue, rGenSec, RandomGen.Next64);
+
+                            using (RandomNumberGenerator rGenSec = RandomNumberGenerator.Create())
+                            {
+                                good &= _testRNG<int>(4, int.MaxValue - 4, rGenSec, RandomGen.Next);
+                                good &= _testRNG<int>(1 << 24, rGenSec, RandomGen.Next);
+                                good &= _testRNG<int>(ushort.MaxValue, 1 << 24, rGenSec, RandomGen.Next);
+                                good &= _testRNG<int>(ushort.MaxValue, rGenSec, RandomGen.Next);
+                                good &= _testRNG<int>(413, 414, rGenSec, RandomGen.Next);
+                                good &= _testRNG<int>(413, 413, rGenSec, RandomGen.Next);
+                                good &= _testRNG<int>(int.MinValue, int.MaxValue, rGenSec, RandomGen.Next);
+
+                                good &= _testRNG<uint>(4u, uint.MaxValue - 4, rGenSec, RandomGen.NextUInt32);
+                                good &= _testRNG<uint>(1u << 24, rGenSec, RandomGen.NextUInt32);
+                                good &= _testRNG<uint>(ushort.MaxValue, 1u << 24, rGenSec, RandomGen.NextUInt32);
+                                good &= _testRNG<uint>(ushort.MaxValue, rGenSec, RandomGen.NextUInt32);
+                                good &= _testRNG<uint>(413, 414, rGenSec, RandomGen.NextUInt32);
+                                good &= _testRNG<uint>(413, 413, rGenSec, RandomGen.NextUInt32);
+
+                                good &= _testRNG<long>(400, int.MaxValue + 1L, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(uint.MaxValue + 2L, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(long.MaxValue - 2L, long.MaxValue, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(0, long.MaxValue, rGenSec, RandomGen.Next64);
+                                good &= _testRNG<long>(long.MaxValue, long.MaxValue, rGenSec, RandomGen.Next64);
+                            }
 
                             if (good) Console.WriteLine("All tests passed.");
 
@@ -260,7 +333,7 @@ namespace URandomGen.Tests
             where T : struct, IComparable<T>
         {
             bool returner = true;
-            for (int i = 0; i < RandomSequence.SeedCount; i++)
+            for (int i = 0; i < RandomSequence.SeedCount * 2; i++)
             {
                 T result = genRand();
                 if (result.CompareTo(min) < 0 || result.CompareTo(max) > 0)
@@ -308,6 +381,20 @@ namespace URandomGen.Tests
             Console.WriteLine("static RandomGen.{0}(Random, {1});", genRand.Method.Name, max);
             generator = new Random(1);
             return _testResult<T>(default(T), max, () => genRand(generator, max)) && result;
+        }
+
+        private static bool _testRNG<T>(T min, T max, RandomNumberGenerator generator, Func<RandomNumberGenerator, T, T, T> genRand)
+            where T : struct, IComparable<T>
+        {
+            Console.WriteLine("static RandomGen.{0}(RandomNumberGenerator, {1}, {2});", genRand.Method.Name, min, max);
+            return _testResult<T>(min, max, () => genRand(generator, min, max));
+        }
+
+        private static bool _testRNG<T>(T max, RandomNumberGenerator generator, Func<RandomNumberGenerator, T, T> genRand)
+            where T : struct, IComparable<T>
+        {
+            Console.WriteLine("static RandomGen.{0}(RandomNumberGenerator, {1});", genRand.Method.Name, max);
+            return _testResult<T>(default(T), max, () => genRand(generator, max));
         }
 
         private static ConsoleKey ReadKey()
@@ -467,10 +554,13 @@ namespace URandomGen.Tests
         static RandomSequence()
         {
             _seeds = new uint[SeedCount];
-            for (int i = 0; i < (SeedCount / 2); i++)
+
+            _seeds[1] = 1;
+
+            for (int i = 1; i < (SeedCount / 2); i++)
             {
                 uint curVal = 1u << i;
-                if (i > 0) _seeds[i * 2] = curVal;
+                _seeds[i * 2] = curVal;
                 _seeds[(i * 2) + 1] = curVal | (curVal - 1);
             }
         }
@@ -482,6 +572,53 @@ namespace URandomGen.Tests
         protected override uint SampleUInt32()
         {
             return _seeds[_curIndex = (_curIndex + 1) & _seedMask];
+        }
+
+        public class RNGSequence : RandomNumberGenerator
+        {
+            private int _curIndex = _seedMask;
+            private Queue<byte> buffer = new Queue<byte>();
+
+            public override void GetBytes(byte[] data)
+            {
+                int dex = 0;
+                while (dex < data.Length)
+                {
+                    while (buffer.Count > 0)
+                    {
+                        data[dex++] = buffer.Dequeue();
+                        if (dex >= data.Length)
+                            return;
+                    }
+
+                    uint curVal = _seeds[_curIndex = (_curIndex + 1) & _seedMask];
+                    buffer.Enqueue((byte)curVal);
+                    buffer.Enqueue((byte)(curVal >> 8));
+                    buffer.Enqueue((byte)(curVal >> 16));
+                    buffer.Enqueue((byte)(curVal >> 24));
+                }
+            }
+
+            public override void GetNonZeroBytes(byte[] data)
+            {
+                GetBytes(data);
+                for (int i = 0; i < data.Length; i++)
+                {
+                    int curVal = data[i];
+                    curVal *= 255;
+                    curVal /= 256;
+                    data[i] = (byte)(curVal + 1);
+                }
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    buffer.Clear();
+                    _curIndex = SeedCount;
+                }
+            }
         }
     }
 }
