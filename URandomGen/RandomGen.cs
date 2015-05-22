@@ -36,6 +36,9 @@ using System.Diagnostics.Contracts;
 #if !NOLINQ
 using System.Linq;
 #endif
+#if !NOBIGINT
+using System.Numerics;
+#endif
 
 namespace URandomGen
 {
@@ -270,8 +273,11 @@ namespace URandomGen
         private const int max16 = 1 << 16;
         private const long max32 = 1L << 32;
         private const long max48 = 1L << 48;
+#if NOBIGINT
         private const decimal max64 = ulong.MaxValue + 1.0m;
-
+#else
+        private static readonly BigInteger max64 = new BigInteger(ulong.MaxValue) + 1;
+#endif
         private static uint _nextUInt32(Random generator, uint minValue, uint maxValue)
         {
             long length = maxValue - (long)minValue;
@@ -350,21 +356,33 @@ namespace URandomGen
             return NextUInt32(generator, uint.MaxValue);
         }
 
-
+#if NOBIGINT
         private static decimal _sampleValue(RandomGen generator, decimal length)
+#else
+        private static BigInteger _sampleValue(RandomGen generator, BigInteger length)
+#endif
         {
             if (length == max32)
                 return generator.SampleUInt32();
             if (length <= max32)
                 return (length * generator.SampleUInt32()) / max32;
 
+#if NOBIGINT
+            return (length / max64) * generator.SampleUInt64();
+#else
             return (length * generator.SampleUInt64()) / max64;
+#endif
         }
 
+#if NOBIGINT
         private static decimal _next64(Random generator, decimal minValue, decimal maxValue)
         {
             decimal length = maxValue - minValue;
-
+#else
+        private static BigInteger _next64(Random generator, BigInteger minValue, BigInteger maxValue)
+        {
+            BigInteger length = maxValue - minValue;
+#endif
             if (generator is RandomGen)
                 return minValue + _sampleValue((RandomGen)generator, length);
 
@@ -379,11 +397,19 @@ namespace URandomGen
             result |= (ulong)generator.Next(max16) << 32;
 
             if (length < max48)
+#if NOBIGINT
+                return (length / max48) * result;
+#else
                 return (length * result) / max48;
+#endif
 
             result |= (ulong)generator.Next(max16) << 48;
 
+#if NOBIGINT
+            return ((length / max64) * result) + minValue;
+#else
             return ((length * result) / max64) + minValue;
+#endif
         }
 
         /// <summary>
@@ -404,8 +430,11 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
+#if NOBIGINT
             decimal length = (decimal)maxValue - minValue;
-
+#else
+            BigInteger length = (BigInteger)maxValue - minValue;
+#endif
             return (long)(_sampleValue(this, length) + minValue);
         }
 
@@ -426,7 +455,12 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (long)_sampleValue(this, (decimal)maxValue);
+            return (long)_sampleValue(this,
+#if NOBIGINT
+                (decimal)maxValue);
+#else
+                (BigInteger)maxValue);
+#endif
         }
 
         /// <summary>
@@ -519,7 +553,11 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
+#if NOBIGINT
             decimal length = (decimal)maxValue - minValue;
+#else
+            BigInteger length = (BigInteger)maxValue - minValue;
+#endif
 
             return (ulong)(_sampleValue(this, length) + minValue);
         }
@@ -539,7 +577,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (ulong)_sampleValue(this, (decimal)maxValue);
+            return (ulong)_sampleValue(this, maxValue);
         }
 
         /// <summary>
@@ -612,7 +650,6 @@ namespace URandomGen
         {
             return NextUInt64(generator, ulong.MaxValue);
         }
-
 
         /// <summary>
         /// Fills the elements of the specified array of bytes with random numbers between 0 and 255 inclusive.
