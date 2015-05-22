@@ -368,10 +368,15 @@ namespace URandomGen
             if (generator is RandomGen)
                 return minValue + _sampleValue((RandomGen)generator, length);
 
-            if (length < max32)
+            if (length <= int.MaxValue)
                 return minValue + generator.Next((int)length);
 
-            ulong result = (uint)generator.Next(max16) | ((uint)generator.Next(max16) << 16) | (ulong)generator.Next(max16) << 32;
+            ulong result = (uint)generator.Next(max16) | ((uint)generator.Next(max16) << 16);
+
+            if (length < max32)
+                return (length * result) / max32;
+
+            result |= (ulong)generator.Next(max16) << 32;
 
             if (length < max48)
                 return (length * result) / max48;
