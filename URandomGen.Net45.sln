@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Net45", "URandomGen\URandomGen.Net45.csproj", "{EB1C2094-AD9C-4C0C-B7E0-D13D13891F39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Tests.Net45", "URandomGen.Tests\URandomGen.Tests.Net45.csproj", "{DF68014E-F2E3-43F8-8997-CFD43E00ACBF}"
