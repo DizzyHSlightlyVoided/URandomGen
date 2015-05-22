@@ -371,12 +371,7 @@ namespace URandomGen
             if (length < max32)
                 return minValue + generator.Next((int)length);
 
-            ulong result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
-
-            if (length <= uint.MaxValue)
-                return (length * result) / max32;
-
-            result |= (ulong)generator.Next(max16) << 32;
+            ulong result = (uint)generator.Next(max16) | ((uint)generator.Next(max16) << 16) | (ulong)generator.Next(max16) << 32;
 
             if (length < max48)
                 return (length * result) / max48;
