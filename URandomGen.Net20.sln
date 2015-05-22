@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Net20", "URandomGen\URandomGen.Net20.csproj", "{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Tests.Net20", "URandomGen.Tests\URandomGen.Tests.Net20.csproj", "{C07028D3-9DB9-49D8-8A55-3B182044D876}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C07028D3-9DB9-49D8-8A55-3B182044D876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C07028D3-9DB9-49D8-8A55-3B182044D876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C07028D3-9DB9-49D8-8A55-3B182044D876}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{C07028D3-9DB9-49D8-8A55-3B182044D876}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

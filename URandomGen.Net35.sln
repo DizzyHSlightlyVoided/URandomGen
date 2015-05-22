@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Net35", "URandomGen\URandomGen.Net35.csproj", "{0C213931-1142-435C-BD96-58DBDA695541}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Tests.Net35", "URandomGen.Tests\URandomGen.Tests.Net35.csproj", "{A6DCA670-0069-480B-86C3-5BE98969B7FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{0C213931-1142-435C-BD96-58DBDA695541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C213931-1142-435C-BD96-58DBDA695541}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C213931-1142-435C-BD96-58DBDA695541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6DCA670-0069-480B-86C3-5BE98969B7FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6DCA670-0069-480B-86C3-5BE98969B7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6DCA670-0069-480B-86C3-5BE98969B7FE}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6DCA670-0069-480B-86C3-5BE98969B7FE}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
