@@ -54,8 +54,9 @@ namespace URandomGen.Tests
                 Console.WriteLine("1. RandomCMWC");
                 Console.WriteLine("2. RandomMersenne");
                 Console.WriteLine("3. RandomXorShift");
-                Console.WriteLine("4. System.Random, for comparison");
-                Console.WriteLine("5. Test RandomGen methods");
+                Console.WriteLine("4. RandomCrypt with RandomNumberGenerator.Create()");
+                Console.WriteLine("5. System.Random, for comparison");
+                Console.WriteLine("6. Test RandomGen methods");
                 Console.WriteLine("X. Exit");
 
                 key = ReadKey();
@@ -74,9 +75,12 @@ namespace URandomGen.Tests
                         generator = new RandomXorshift();
                         break;
                     case ConsoleKey.D4:
-                        generator = new Random();
+                        generator = new RandomCrypt(RandomNumberGenerator.Create());
                         break;
                     case ConsoleKey.D5:
+                        generator = new Random();
+                        break;
+                    case ConsoleKey.D6:
                         {
                             Console.WriteLine("  Testing random whether random sequences properly fall in range:");
                             bool good = true;
@@ -295,6 +299,9 @@ namespace URandomGen.Tests
 
                     if (bmpBitmap != null)
                         bmpBitmap.Dispose();
+
+                    if (generator is RandomCrypt)
+                        ((RandomCrypt)generator).Generator.Dispose();
                 }
 
             }
