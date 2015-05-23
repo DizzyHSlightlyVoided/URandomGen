@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RandomCMWC.cs" />
+    <Compile Include="RandomCrypt.cs" />
     <Compile Include="RandomGen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomMersenne.cs" />

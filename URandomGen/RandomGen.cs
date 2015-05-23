@@ -177,15 +177,29 @@ namespace URandomGen
 #endif
         }
 
-        private static long _next32(RandomNumberGenerator generator, long minValue, long maxValue)
+        internal static uint SampleGen32(RandomNumberGenerator generator)
         {
-            long length = maxValue - minValue;
-
             byte[] data = new byte[sizeof(uint)];
 
             generator.GetBytes(data);
 
-            BigValue sample = data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16) | ((uint)data[3] << 24);
+            return data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16) | ((uint)data[3] << 24);
+        }
+
+        internal static ulong SampleGen64(RandomNumberGenerator generator)
+        {
+            byte[] data = new byte[8];
+            generator.GetBytes(data);
+
+            return data[0] | ((ulong)data[1] << 8) | ((ulong)data[2] << 16) | ((ulong)data[3] << 24) |
+                ((ulong)data[4] << 32) | ((ulong)data[5] << 40) | ((ulong)data[6] << 48) | ((ulong)data[7] << 56);
+        }
+
+        private static long _next32(RandomNumberGenerator generator, long minValue, long maxValue)
+        {
+            long length = maxValue - minValue;
+
+            BigValue sample = SampleGen32(generator);
 
             return (long)
 #if NOBIGINT
@@ -579,7 +593,7 @@ namespace URandomGen
                 return _next32(generator, (long)minValue, (long)maxValue);
 
             if (length == max32)
-                return minValue + _next32(generator, 0, max32);
+                return minValue + SampleGen32(generator);
 
             if (length < max48)
             {
@@ -597,11 +611,7 @@ namespace URandomGen
             }
             else
             {
-                byte[] data = new byte[8];
-                generator.GetBytes(data);
-
-                ulong result = data[0] | ((ulong)data[1] << 8) | ((ulong)data[2] << 16) | ((ulong)data[3] << 24) |
-                    ((ulong)data[4] << 32) | ((ulong)data[5] << 40) | ((ulong)data[6] << 48) | ((ulong)data[7] << 56);
+                ulong result = SampleGen64(generator);
 
                 return minValue +
 #if NOBIGINT
