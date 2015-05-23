@@ -1019,13 +1019,13 @@ namespace URandomGen
                 count = ((ICollection<T>)collection).Count;
                 return true;
             }
-            if (collection is System.Collections.ICollection)
+            else if (collection is System.Collections.ICollection)
             {
                 count = ((System.Collections.ICollection)collection).Count;
                 return true;
             }
 #if NET_4_5
-            if (collection is IReadOnlyCollection<T>)
+            else if (collection is IReadOnlyCollection<T>)
             {
                 count = ((IReadOnlyCollection<T>)collection).Count;
                 return true;
@@ -1035,14 +1035,17 @@ namespace URandomGen
             return false;
         }
 
-        private static void _shuffleArray<T>(Random generator, T[] array, int startIndex, int length)
+#if NOFUNC
+        private delegate TOut Func<T1, TOut>(T1 arg1);
+#endif
+        private static void _shuffleArray<T>(Func<int, int> nextInt32, T[] array, int startIndex, int length)
         {
             int next;
 
             for (int i = 0, iPos = startIndex; i < length; i = next, iPos++)
             {
                 next = i + 1;
-                int j = i == 0 ? 0 : generator.Next(0, next);
+                int j = i == 0 ? 0 : nextInt32(next);
 
                 if (i == j)
                     continue;
@@ -1055,19 +1058,8 @@ namespace URandomGen
             }
         }
 
-        /// <summary>
-        /// Returns all elements in the specified collection in random order.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
-        /// <param name="generator">The random number generator to use.</param>
-        /// <param name="collection">The collection whose elements will be shuffled.</param>
-        /// <returns>A list containing the shuffled elements in <paramref name="collection"/>.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
-        /// </exception>
-        public static T[] Shuffle<T>(Random generator, IEnumerable<T> collection)
+        private static T[] _shuffle<T>(Func<int, int> nextInt32, IEnumerable<T> collection)
         {
-            if (generator == null) throw new ArgumentNullException("generator");
             if (collection == null) throw new ArgumentNullException("collection");
 #if !NOCONTRACT
             Contract.Ensures(Contract.Result<T[]>() != null);
@@ -1083,7 +1075,7 @@ namespace URandomGen
                 foreach (T item in collection)
                 {
                     int next = count + 1;
-                    int j = count == 0 ? 0 : generator.Next(0, next);
+                    int j = count == 0 ? 0 : nextInt32(next);
 
                     if (j == count)
                     {
@@ -1097,13 +1089,46 @@ namespace URandomGen
                 }
                 return list;
             }
+            T[] array =
 #if NOLINQ
-            T[] array = ToArray<T>(collection);
+                ToArray<T>(collection);
 #else
-            T[] array = collection.ToArray();
+                collection.ToArray();
 #endif
-            _shuffleArray<T>(generator, array, 0, array.Length);
+            _shuffleArray(nextInt32, array, 0, array.Length);
             return array;
+        }
+
+        /// <summary>
+        /// Returns all elements in the specified collection in random order.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">The collection whose elements will be shuffled.</param>
+        /// <returns>A list containing the shuffled elements in <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        public static T[] Shuffle<T>(Random generator, IEnumerable<T> collection)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            return _shuffle(generator.Next, collection);
+        }
+
+        /// <summary>
+        /// Returns all elements in the specified collection in random order.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">The collection whose elements will be shuffled.</param>
+        /// <returns>A list containing the shuffled elements in <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        public static T[] Shuffle<T>(RandomNumberGenerator generator, IEnumerable<T> collection)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            return _shuffle(i => (int)_next32(generator, 0, i), collection);
         }
 
         /// <summary>
@@ -1117,7 +1142,7 @@ namespace URandomGen
         /// </exception>
         public T[] Shuffle<T>(IEnumerable<T> collection)
         {
-            return Shuffle<T>(this, collection);
+            return Shuffle(this, collection);
         }
 
         /// <summary>
@@ -1136,7 +1161,26 @@ namespace URandomGen
 #if !NOCONTRACT
             Contract.EndContractBlock();
 #endif
-            _shuffleArray<T>(generator, array, 0, array.Length);
+            _shuffleArray(generator.Next, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Shuffles all elements in the specified array.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the array.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="array">The array whose elements will be shuffled.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="array"/> is <c>null</c>.
+        /// </exception>
+        public static void ShuffleArray<T>(RandomNumberGenerator generator, T[] array)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            if (array == null) throw new ArgumentNullException("array");
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
+            _shuffleArray(i => (int)_next32(generator, 0, i), array, 0, array.Length);
         }
 
         /// <summary>
@@ -1149,7 +1193,7 @@ namespace URandomGen
         /// </exception>
         public void ShuffleArray<T>(T[] array)
         {
-            ShuffleArray<T>(this, array);
+            ShuffleArray(this, array);
         }
     }
 }
