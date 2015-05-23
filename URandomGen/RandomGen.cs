@@ -1195,5 +1195,304 @@ namespace URandomGen
         {
             ShuffleArray(this, array);
         }
+
+        private static T _randomElement<T>(Func<int, int> nextInt32, IEnumerable<T> collection)
+        {
+            if (collection == null) throw new ArgumentNullException("collection");
+            using (IEnumerator<T> enumer = collection.GetEnumerator())
+                if (!enumer.MoveNext()) throw new ArgumentException("The collection is empty.", "collection");
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
+            int elementCount;
+            if (!TryGetCount(collection, out elementCount))
+            {
+                collection =
+#if NOLINQ
+                    ToArray(collection);
+#else
+                    collection.ToArray();
+#endif
+                elementCount = ((T[])collection).Length;
+            }
+
+            int index = nextInt32(elementCount);
+
+            if (collection is IList<T>)
+                return ((IList<T>)collection)[index];
+
+            if (collection is System.Collections.IList)
+                return (T)((System.Collections.IList)collection)[index];
+#if NET_4_5
+            if (collection is IReadOnlyList<T>)
+                return ((IReadOnlyList<T>)collection)[index];
+#endif
+
+#if NOLINQ
+            using (IEnumerator<T> enumer = collection.GetEnumerator())
+            {
+                while (enumer.MoveNext())
+                    if (--index == 0) return enumer.Current;
+
+                throw new InvalidOperationException("This cannot be!");
+            }
+#else
+            return collection.ElementAt(index);
+#endif
+        }
+
+        /// <summary>
+        /// Returns a random element from the specified collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">The collection from which to get a random element.</param>
+        /// <returns>A random element from <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        public static T RandomElement<T>(Random generator, IEnumerable<T> collection)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+
+            return _randomElement(generator.Next, collection);
+        }
+
+        /// <summary>
+        /// Returns a random element from the specified collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">The collection from which to get a random element.</param>
+        /// <returns>A random element from <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        public static T RandomElement<T>(RandomNumberGenerator generator, IEnumerable<T> collection)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            return _randomElement(i => (int)_next32(generator, 0, i), collection);
+        }
+
+        /// <summary>
+        /// Returns a random element from the specified collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="collection">The collection from which to get a random element.</param>
+        /// <returns>A random element from <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        public T RandomElement<T>(IEnumerable<T> collection)
+        {
+            return RandomElement(this, collection);
+        }
+
+        private static T[] _randomElements<T>(Func<int, int> nextInt32, IEnumerable<T> collection, int length)
+        {
+            if (collection == null) throw new ArgumentNullException("collection");
+            using (IEnumerator<T> enumer = collection.GetEnumerator())
+                if (!enumer.MoveNext()) throw new ArgumentException("The collection is empty.", "collection");
+            if (length < 0) throw new ArgumentOutOfRangeException("length", length, "The specified value is less than 0.");
+
+            T[] result = new T[length]; //May throw OutOfMemoryException
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
+            if (length == 0) return result;
+
+            if (collection is IList<T>)
+            {
+                IList<T> list = (IList<T>)collection;
+
+                for (int i = 0; i < length; i++)
+                    result[i] = list[nextInt32(list.Count)];
+            }
+            else if (collection is System.Collections.IList)
+            {
+                System.Collections.IList list = (System.Collections.IList)collection;
+
+                for (int i = 0; i < length; i++)
+                    result[i] = (T)list[nextInt32(list.Count)];
+            }
+#if NET_4_5
+            else if (collection is IReadOnlyList<T>)
+            {
+                IReadOnlyList<T> list = (IReadOnlyList<T>)collection;
+
+                for (int i = 0; i < length; i++)
+                    result[i] = list[nextInt32(list.Count)];
+            }
+#endif
+            else
+            {
+                T[] array =
+#if NOLINQ
+                    ToArray(collection);
+#else
+                    collection.ToArray();
+#endif
+
+                for (int i = 0; i < length; i++)
+                    result[i] = array[nextInt32(array.Length)];
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns an array containing elements randomly copied from the specified collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">A collection whose elements will be copied to the new array.</param>
+        /// <param name="length">The number of elements to copy.</param>
+        /// <returns>An array containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        /// <exception cref="OutOfMemoryException">
+        /// Could not allocate the return array.
+        /// </exception>
+        public static T[] RandomElements<T>(Random generator, IEnumerable<T> collection, int length)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            return _randomElements(generator.Next, collection, length);
+        }
+
+        /// <summary>
+        /// Returns an array containing elements randomly copied from the specified collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">A collection whose elements will be copied to the new array.</param>
+        /// <param name="length">The number of elements to copy.</param>
+        /// <returns>An array containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        /// <exception cref="OutOfMemoryException">
+        /// Could not allocate the return array.
+        /// </exception>
+        public static T[] RandomElements<T>(RandomNumberGenerator generator, IEnumerable<T> collection, int length)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+            return _randomElements(i => (int)_next32(generator, 0, i), collection, length);
+        }
+
+        /// <summary>
+        /// Returns an array containing elements randomly copied from the specified collection.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements in the collection.</typeparam>
+        /// <param name="collection">A collection whose elements will be copied to the new array.</param>
+        /// <param name="length">The number of elements to copy.</param>
+        /// <returns>An array containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        /// <exception cref="OutOfMemoryException">
+        /// Could not allocate the return array.
+        /// </exception>
+        public T[] RandomElements<T>(IEnumerable<T> collection, int length)
+        {
+            return RandomElements(this, collection, length);
+        }
+
+        /// <summary>
+        /// Returns a new string containing characters randomly copied from the specified collection.  
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">A collection whose elements will be copied to the new array.</param>
+        /// <param name="length">The number of characters to copy.</param>
+        /// <returns>A string containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        /// <exception cref="OutOfMemoryException">
+        /// Could not allocate the return array.
+        /// </exception>
+        public static string RandomString(Random generator, IEnumerable<char> collection, int length)
+        {
+            return new string(RandomElements(generator, collection, length));
+        }
+
+        /// <summary>
+        /// Returns a new string containing characters randomly copied from the specified collection.  
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">A collection whose elements will be copied to the new array.</param>
+        /// <param name="length">The number of characters to copy.</param>
+        /// <returns>A string containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        /// <exception cref="OutOfMemoryException">
+        /// Could not allocate the return array.
+        /// </exception>
+        public static string RandomString(RandomNumberGenerator generator, IEnumerable<char> collection, int length)
+        {
+            return new string(RandomElements(generator, collection, length));
+        }
+
+        /// <summary>
+        /// Returns a new string containing characters randomly copied from the specified collection.  
+        /// </summary>
+        /// <param name="collection">A collection whose elements will be copied to the new array.</param>
+        /// <param name="length">The number of characters to copy.</param>
+        /// <returns>A string containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> is empty.
+        /// </exception>
+        /// <exception cref="OutOfMemoryException">
+        /// Could not allocate the return array.
+        /// </exception>
+        public string RandomString(IEnumerable<char> collection, int length)
+        {
+            return new string(RandomElements(collection, length));
+        }
     }
 }
