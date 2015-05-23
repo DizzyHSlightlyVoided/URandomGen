@@ -81,115 +81,93 @@ namespace URandomGen.Tests
                             Console.WriteLine("  Testing random whether random sequences properly fall in range:");
                             bool good = true;
 
-                            good &= _testLocal(4, int.MaxValue - 4, new RandomSequence().Next);
-                            good &= _testLocal(1 << 24, new RandomSequence().Next);
-                            good &= _testLocal<int>(ushort.MaxValue, 1 << 24, new RandomSequence().Next);
-                            good &= _testLocal<int>(ushort.MaxValue, new RandomSequence().Next);
-                            good &= _testLocal<int>(413, 414, new RandomSequence().Next);
-                            good &= _testLocal<int>(413, 413, new RandomSequence().Next);
+                            //RandomGen
+                            //int
+                            foreach (Tuple<int, int> curPair in _test32minmax)
+                                good &= _testLocal(curPair.Item1, curPair.Item2, new RandomSequence().Next);
+                            foreach (int curItem in _test32max)
+                                good &= _testLocal(curItem, new RandomSequence().Next);
 
-                            good &= _testLocal<uint>(4u, uint.MaxValue - 4, new RandomSequence().NextUInt32);
-                            good &= _testLocal<uint>(1u << 24, new RandomSequence().NextUInt32);
-                            good &= _testLocal<uint>(ushort.MaxValue, 1u << 24, new RandomSequence().NextUInt32);
-                            good &= _testLocal<uint>(ushort.MaxValue, new RandomSequence().NextUInt32);
-                            good &= _testLocal<uint>(413, 414, new RandomSequence().NextUInt32);
-                            good &= _testLocal<uint>(413, 413, new RandomSequence().NextUInt32);
+                            //uint
+                            foreach (Tuple<uint, uint> curPair in _testU32minmax)
+                            {
+                                good &= _testLocal(curPair.Item1, curPair.Item2, new RandomSequence().NextUInt32);
+                                good &= _testStatic(curPair.Item1, curPair.Item2, RandomGen.NextUInt32);
+                            }
+                            foreach (uint curItem in _testU32max)
+                            {
+                                good &= _testLocal(curItem, new RandomSequence().NextUInt32);
+                                good &= _testStatic(curItem, RandomGen.NextUInt32);
+                            }
 
-                            good &= _testStatic<uint>(4u, uint.MaxValue - 4, RandomGen.NextUInt32);
-                            good &= _testStatic<uint>(1u << 24, RandomGen.NextUInt32);
-                            good &= _testStatic<uint>(ushort.MaxValue, 1u << 24, RandomGen.NextUInt32);
-                            good &= _testStatic<uint>(ushort.MaxValue, RandomGen.NextUInt32);
-                            good &= _testStatic<uint>(413, 414, RandomGen.NextUInt32);
-                            good &= _testStatic<uint>(413, 413, RandomGen.NextUInt32);
+                            //long
+                            foreach (Tuple<long, long> curPair in _test64minmax)
+                            {
+                                good &= _testLocal(curPair.Item1, curPair.Item2, new RandomSequence().Next64);
+                                good &= _testStatic(curPair.Item1, curPair.Item2, RandomGen.Next64);
+                            }
+                            foreach (long curItem in _test64max)
+                            {
+                                good &= _testLocal(curItem, new RandomSequence().Next64);
+                                good &= _testStatic(curItem, RandomGen.Next64);
+                            }
 
-                            good &= _testLocal<long>(400, int.MaxValue + 1L, new RandomSequence().Next64);
-                            good &= _testLocal<long>(uint.MaxValue + 1L, new RandomSequence().Next64);
-                            good &= _testLocal<long>(uint.MaxValue, uint.MaxValue + 1L, new RandomSequence().Next64);
-                            good &= _testLocal<long>(uint.MaxValue + 2L, new RandomSequence().Next64);
-                            good &= _testLocal<long>(uint.MaxValue, uint.MaxValue, new RandomSequence().Next64);
-
-                            good &= _testStatic<long>(400, int.MaxValue + 1L, RandomGen.Next64);
-                            good &= _testStatic<long>(uint.MaxValue + 1L, RandomGen.Next64);
-                            good &= _testStatic<long>(uint.MaxValue, uint.MaxValue + 1L, RandomGen.Next64);
-                            good &= _testStatic<long>(uint.MaxValue + 2L, RandomGen.Next64);
-                            good &= _testStatic<long>(uint.MaxValue, uint.MaxValue, RandomGen.Next64);
-                            good &= _testStatic<long>(long.MaxValue - 2L, long.MaxValue, RandomGen.Next64);
-                            good &= _testStatic<long>(0, long.MaxValue, RandomGen.Next64);
-                            good &= _testStatic<long>(long.MaxValue, long.MaxValue, RandomGen.Next64);
-
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(4, int.MaxValue - 4, rGenSec, RandomGen.Next);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(1 << 24, rGenSec, RandomGen.Next);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(ushort.MaxValue, 1 << 24, rGenSec, RandomGen.Next);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(ushort.MaxValue, rGenSec, RandomGen.Next);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(413, 414, rGenSec, RandomGen.Next);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(413, 413, rGenSec, RandomGen.Next);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<int>(int.MinValue, int.MaxValue, rGenSec, RandomGen.Next);
-
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<uint>(4u, uint.MaxValue - 4, rGenSec, RandomGen.NextUInt32);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<uint>(1u << 24, rGenSec, RandomGen.NextUInt32);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<uint>(ushort.MaxValue, 1u << 24, rGenSec, RandomGen.NextUInt32);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<uint>(ushort.MaxValue, rGenSec, RandomGen.NextUInt32);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<uint>(413, 414, rGenSec, RandomGen.NextUInt32);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<uint>(413, 413, rGenSec, RandomGen.NextUInt32);
-
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(400, int.MaxValue + 1L, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(uint.MaxValue + 2L, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(long.MaxValue - 2L, long.MaxValue, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(0, long.MaxValue, rGenSec, RandomGen.Next64);
-                            using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                good &= _testRNG<long>(long.MaxValue, long.MaxValue, rGenSec, RandomGen.Next64);
-
+                            //RandomNumberGenerator sequence
+                            //int
+                            foreach (Tuple<int, int> curPair in _test32minmax)
+                            {
+                                using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next);
+                            }
+                            foreach (int curItem in _test32max)
+                            {
+                                using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next);
+                            }
+                            //uint
+                            foreach (Tuple<uint, uint> curPair in _testU32minmax)
+                            {
+                                using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.NextUInt32);
+                            }
+                            foreach (uint curItem in _testU32max)
+                            {
+                                using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                    good &= _testRNG(curItem, rGenSec, RandomGen.NextUInt32);
+                            }
+                            //long
+                            foreach (Tuple<long, long> curPair in _test64minmax)
+                            {
+                                using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next64);
+                            }
+                            foreach (long curItem in _test64max)
+                            {
+                                using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
+                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next64);
+                            }
+                            //RandomNumberGenerator single
                             using (RandomNumberGenerator rGenSec = RandomNumberGenerator.Create())
                             {
-                                good &= _testRNG<int>(4, int.MaxValue - 4, rGenSec, RandomGen.Next);
-                                good &= _testRNG<int>(1 << 24, rGenSec, RandomGen.Next);
-                                good &= _testRNG<int>(ushort.MaxValue, 1 << 24, rGenSec, RandomGen.Next);
-                                good &= _testRNG<int>(ushort.MaxValue, rGenSec, RandomGen.Next);
-                                good &= _testRNG<int>(413, 414, rGenSec, RandomGen.Next);
-                                good &= _testRNG<int>(413, 413, rGenSec, RandomGen.Next);
-                                good &= _testRNG<int>(int.MinValue, int.MaxValue, rGenSec, RandomGen.Next);
-
-                                good &= _testRNG<uint>(4u, uint.MaxValue - 4, rGenSec, RandomGen.NextUInt32);
-                                good &= _testRNG<uint>(1u << 24, rGenSec, RandomGen.NextUInt32);
-                                good &= _testRNG<uint>(ushort.MaxValue, 1u << 24, rGenSec, RandomGen.NextUInt32);
-                                good &= _testRNG<uint>(ushort.MaxValue, rGenSec, RandomGen.NextUInt32);
-                                good &= _testRNG<uint>(413, 414, rGenSec, RandomGen.NextUInt32);
-                                good &= _testRNG<uint>(413, 413, rGenSec, RandomGen.NextUInt32);
-
-                                good &= _testRNG<long>(400, int.MaxValue + 1L, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue + 1L, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(uint.MaxValue + 2L, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(uint.MaxValue, uint.MaxValue, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(long.MaxValue - 2L, long.MaxValue, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(0, long.MaxValue, rGenSec, RandomGen.Next64);
-                                good &= _testRNG<long>(long.MaxValue, long.MaxValue, rGenSec, RandomGen.Next64);
+                                //int
+                                foreach (Tuple<int, int> curPair in _test32minmax)
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next);
+                                foreach (int curItem in _test32max)
+                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next);
+                                //uint
+                                foreach (Tuple<uint, uint> curPair in _testU32minmax)
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.NextUInt32);
+                                foreach (uint curItem in _testU32max)
+                                    good &= _testRNG(curItem, rGenSec, RandomGen.NextUInt32);
+                                //long
+                                foreach (Tuple<long, long> curPair in _test64minmax)
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next64);
+                                foreach (long curItem in _test64max)
+                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next64);
                             }
 
                             if (good) Console.WriteLine("All tests passed.");
+                            else Console.WriteLine("Some errors ocurred. See above for more information.");
 
                             Console.WriteLine();
                             Console.WriteLine("Testing whether Shuffle and ArrayShuffle give the same results ...");
@@ -328,6 +306,39 @@ namespace URandomGen.Tests
             for (int i = 0; i < 30; i++)
                 yield return i;
         }
+
+        private static readonly Tuple<int, int>[] _test32minmax =
+        {
+            new Tuple<int, int>(4, int.MaxValue - 4),
+            new Tuple<int, int>(ushort.MaxValue, 1 << 24),
+            new Tuple<int, int>(413, 414),
+            new Tuple<int, int>(413, 413),
+            new Tuple<int, int>(int.MinValue, int.MaxValue)
+        };
+
+        private static readonly int[] _test32max = { 1 << 24, ushort.MaxValue, int.MaxValue, };
+
+        private static readonly Tuple<uint, uint>[] _testU32minmax =
+        {
+            new Tuple<uint, uint>(4, uint.MaxValue - 4),
+            new Tuple<uint, uint>(ushort.MaxValue, 1u << 24),
+            new Tuple<uint, uint>(413, 414),
+            new Tuple<uint, uint>(413, 413),
+            new Tuple<uint, uint>(uint.MinValue, uint.MaxValue),
+        };
+
+        private static readonly uint[] _testU32max = { 1u << 24, ushort.MaxValue, uint.MaxValue };
+
+        private static readonly Tuple<long, long>[] _test64minmax =
+        {
+            new Tuple<long, long>(400, int.MaxValue + 1L),
+            new Tuple<long, long>(uint.MaxValue, uint.MaxValue + 1L),
+            new Tuple<long, long>(long.MaxValue - 2L, long.MaxValue),
+            new Tuple<long, long>(0, long.MaxValue),
+            new Tuple<long, long>(long.MinValue, long.MaxValue)
+        };
+
+        private static readonly long[] _test64max = { 1 << 24, uint.MaxValue + 1L, long.MaxValue, };
 
         private static bool _testResult<T>(T min, T max, Func<T> genRand)
             where T : struct, IComparable<T>
