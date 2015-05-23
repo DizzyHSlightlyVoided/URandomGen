@@ -150,7 +150,7 @@ namespace URandomGen
         /// <summary>
         /// This method is used by other methods to generate random 64-bit numbers.
         /// </summary>
-        /// <returns>A 32-bit unsigned integer which is greater than or equal to 0 and less than or equal to <see cref="UInt64.MaxValue"/>.</returns>
+        /// <returns>A 64-bit unsigned integer which is greater than or equal to 0 and less than or equal to <see cref="UInt64.MaxValue"/>.</returns>
         protected virtual ulong SampleUInt64()
         {
             return ((ulong)SampleUInt32() << 32) | SampleUInt32();
