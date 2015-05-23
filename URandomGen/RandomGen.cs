@@ -37,8 +37,11 @@ using System.Diagnostics.Contracts;
 #if !NOLINQ
 using System.Linq;
 #endif
-#if !NOBIGINT
-using System.Numerics;
+using BigValue =
+#if NOBIGINT
+    System.Decimal;
+#else
+    System.Numerics.BigInteger;
 #endif
 
 namespace URandomGen
@@ -166,13 +169,10 @@ namespace URandomGen
 
         private static long _sampleValue(RandomGen generator, long length)
         {
+            BigValue sample = generator.SampleUInt32();
 #if NOBIGINT
-            decimal sample = generator.SampleUInt32();
-
             return (long)(length * (sample / max32));
 #else
-            BigInteger sample = generator.SampleUInt32();
-
             return (long)((length * sample) / max32);
 #endif
         }
@@ -185,12 +185,7 @@ namespace URandomGen
 
             generator.GetBytes(data);
 
-#if NOBIGINT
-            decimal
-#else
-            BigInteger
-#endif
-                sample = data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16) | ((uint)data[3] << 24);
+            BigValue sample = data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16) | ((uint)data[3] << 24);
 
             return (long)
 #if NOBIGINT
@@ -370,11 +365,14 @@ namespace URandomGen
         private const int max16 = 1 << 16;
         private const long max32 = 1L << 32;
         private const long max48 = 1L << 48;
+        private
 #if NOBIGINT
-        private const decimal max64 = ulong.MaxValue + 1.0m;
+            const
 #else
-        private static readonly BigInteger max64 = ulong.MaxValue + BigInteger.One;
+            static readonly
 #endif
+                BigValue max64 = ulong.MaxValue + BigValue.One;
+
         private static uint _nextUInt32(Random generator, uint minValue, uint maxValue)
         {
             long length = maxValue - (long)minValue;
@@ -384,12 +382,7 @@ namespace URandomGen
             if (length <= int.MaxValue)
                 return (uint)(generator.Next((int)length) + minValue);
 
-#if NOBIGINT
-            decimal
-#else
-            BigInteger
-#endif
-                result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
+            BigValue result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
 
             return minValue + (uint)
 #if NOBIGINT
@@ -527,11 +520,7 @@ namespace URandomGen
             return NextUInt32(generator, uint.MaxValue);
         }
 
-#if NOBIGINT
-        private static decimal _sample64(RandomGen generator, decimal length)
-#else
-        private static BigInteger _sample64(RandomGen generator, BigInteger length)
-#endif
+        private static BigValue _sample64(RandomGen generator, BigValue length)
         {
             if (length == max32)
                 return generator.SampleUInt32();
@@ -547,15 +536,10 @@ namespace URandomGen
 #endif
         }
 
-#if NOBIGINT
-        private static decimal _next64(Random generator, decimal minValue, decimal maxValue)
+        private static BigValue _next64(Random generator, BigValue minValue, BigValue maxValue)
         {
-            decimal length = maxValue - minValue;
-#else
-        private static BigInteger _next64(Random generator, BigInteger minValue, BigInteger maxValue)
-        {
-            BigInteger length = maxValue - minValue;
-#endif
+            BigValue length = maxValue - minValue;
+
             if (generator is RandomGen)
                 return minValue + _sample64((RandomGen)generator, length);
 
@@ -588,15 +572,9 @@ namespace URandomGen
 #endif
         }
 
-#if NOBIGINT
-        private static decimal _next64(RandomNumberGenerator generator, decimal minValue, decimal maxValue)
+        private static BigValue _next64(RandomNumberGenerator generator, BigValue minValue, BigValue maxValue)
         {
-            decimal length = maxValue - minValue;
-#else
-        private static BigInteger _next64(RandomNumberGenerator generator, BigInteger minValue, BigInteger maxValue)
-        {
-            BigInteger length = maxValue - minValue;
-#endif
+            BigValue length = maxValue - minValue;
             if (length < max32)
                 return _next32(generator, (long)minValue, (long)maxValue);
 
@@ -652,11 +630,9 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-#if NOBIGINT
-            decimal length = (decimal)maxValue - minValue;
-#else
-            BigInteger length = (BigInteger)maxValue - minValue;
-#endif
+
+            BigValue length = (BigValue)maxValue - minValue;
+
             return (long)(_sample64(this, length) + minValue);
         }
 
@@ -833,11 +809,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-#if NOBIGINT
-            decimal length = (decimal)maxValue - minValue;
-#else
-            BigInteger length = (BigInteger)maxValue - minValue;
-#endif
+            BigValue length = (BigValue)maxValue - minValue;
 
             return (ulong)(_sample64(this, length) + minValue);
         }
