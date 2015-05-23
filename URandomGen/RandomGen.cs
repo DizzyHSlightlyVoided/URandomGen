@@ -167,7 +167,7 @@ namespace URandomGen
             return SampleUInt32() / max;
         }
 
-        private static long _sampleValue(RandomGen generator, long length)
+        private static long _sample32(RandomGen generator, long length)
         {
             BigValue sample = generator.SampleUInt32();
 #if NOBIGINT
@@ -195,19 +195,15 @@ namespace URandomGen
                 ((ulong)data[4] << 32) | ((ulong)data[5] << 40) | ((ulong)data[6] << 48) | ((ulong)data[7] << 56);
         }
 
-        private static long _next32(RandomNumberGenerator generator, long minValue, long maxValue)
+        private static long _next32(RandomNumberGenerator generator, long length)
         {
-            long length = maxValue - minValue;
-
             BigValue sample = SampleGen32(generator);
 
-            return (long)
 #if NOBIGINT
-                (length * (sample / max32))
+            return (long)(length * (sample / max32));
 #else
-                ((length * sample) / max32)
+            return (long)((length * sample) / max32);
 #endif
-                + minValue;
         }
 
         /// <summary>
@@ -228,9 +224,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            long length = maxValue - (long)minValue;
-
-            return (int)(minValue + _sampleValue(this, length));
+            return (int)(_sample32(this, (long)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -250,7 +244,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (int)_sampleValue(this, maxValue);
+            return (int)_sample32(this, maxValue);
         }
 
         /// <summary>
@@ -285,7 +279,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (int)_next32(generator, minValue, maxValue);
+            return (int)(_next32(generator, (long)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -309,7 +303,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<int>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (int)_next32(generator, 0, maxValue);
+            return (int)_next32(generator, maxValue);
         }
 
         /// <summary>
@@ -346,7 +340,7 @@ namespace URandomGen
 #endif
             long length = maxValue - (long)minValue;
 
-            return (uint)(minValue + _sampleValue(this, length));
+            return (uint)(_sample32(this, length) + minValue);
         }
 
         /// <summary>
@@ -364,7 +358,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (uint)_sampleValue(this, maxValue);
+            return (uint)_sample32(this, maxValue);
         }
 
         /// <summary>
@@ -387,22 +381,20 @@ namespace URandomGen
 #endif
                 BigValue max64 = ulong.MaxValue + BigValue.One;
 
-        private static uint _nextUInt32(Random generator, uint minValue, uint maxValue)
+        private static uint _nextUInt32(Random generator, long length)
         {
-            long length = maxValue - (long)minValue;
             if (generator is RandomGen)
-                return (uint)(minValue + _sampleValue((RandomGen)generator, length));
+                return (uint)_sample32((RandomGen)generator, length);
 
             if (length <= int.MaxValue)
-                return (uint)(generator.Next((int)length) + minValue);
+                return (uint)generator.Next((int)length);
 
             BigValue result = ((uint)generator.Next(max16) << 16) | (uint)generator.Next(max16);
 
-            return minValue + (uint)
 #if NOBIGINT
-                (length * (result / max32));
+            return (uint)(length * (result / max32));
 #else
-                ((length * result) / max32);
+            return (uint)((length * result) / max32);
 #endif
         }
 
@@ -429,7 +421,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return _nextUInt32(generator, minValue, maxValue);
+            return _nextUInt32(generator, (long)maxValue - minValue) + minValue;
         }
 
         /// <summary>
@@ -454,7 +446,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return _nextUInt32(generator, 0, maxValue);
+            return _nextUInt32(generator, maxValue);
         }
 
         /// <summary>
@@ -493,7 +485,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (uint)_next32(generator, minValue, maxValue);
+            return (uint)(_next32(generator, (long)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -518,7 +510,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<uint>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (uint)_next32(generator, 0, maxValue);
+            return (uint)_next32(generator, maxValue);
         }
 
         /// <summary>
@@ -550,50 +542,45 @@ namespace URandomGen
 #endif
         }
 
-        private static BigValue _next64(Random generator, BigValue minValue, BigValue maxValue)
+        private static BigValue _next64(Random generator, BigValue length)
         {
-            BigValue length = maxValue - minValue;
-
             if (generator is RandomGen)
-                return minValue + _sample64((RandomGen)generator, length);
+                return _sample64((RandomGen)generator, length);
 
             if (length <= int.MaxValue)
-                return minValue + generator.Next((int)length);
+                return generator.Next((int)length);
 
             ulong result = (uint)generator.Next(max16) | ((uint)generator.Next(max16) << 16);
 
             if (length < max32)
-                return minValue + (length * result) / max32;
+                return (length * result) / max32;
 
             result |= (ulong)generator.Next(max16) << 32;
 
             if (length < max48)
             {
-                return minValue +
 #if NOBIGINT
-                    (length / max48) * result;
+                return (length / max48) * result;
 #else
-                    (length * result) / max48;
+                return (length * result) / max48;
 #endif
             }
             result |= (ulong)generator.Next(max16) << 48;
 
-            return minValue +
 #if NOBIGINT
-                ((length / max64) * result);
+            return ((length / max64) * result);
 #else
-                ((length * result) / max64);
+            return ((length * result) / max64);
 #endif
         }
 
-        private static BigValue _next64(RandomNumberGenerator generator, BigValue minValue, BigValue maxValue)
+        private static BigValue _next64(RandomNumberGenerator generator, BigValue length)
         {
-            BigValue length = maxValue - minValue;
             if (length < max32)
-                return _next32(generator, (long)minValue, (long)maxValue);
+                return _next32(generator, (long)length);
 
             if (length == max32)
-                return minValue + SampleGen32(generator);
+                return SampleGen32(generator);
 
             if (length < max48)
             {
@@ -602,22 +589,20 @@ namespace URandomGen
 
                 ulong result = data[0] | ((ulong)data[1] << 8) | ((ulong)data[2] << 16) | ((ulong)data[3] << 24) | ((ulong)data[4] << 32) | ((ulong)data[5] << 40);
 
-                return minValue +
 #if NOBIGINT
-                    (length / max48) * result;
+                return (length / max48) * result;
 #else
-                    (length * result) / max48;
+                return (length * result) / max48;
 #endif
             }
             else
             {
                 ulong result = SampleGen64(generator);
 
-                return minValue +
 #if NOBIGINT
-                    (length / max64) * result;
+                return (length / max64) * result;
 #else
-                    (length * result) / max64;
+                return (length * result) / max64;
 #endif
             }
         }
@@ -641,9 +626,7 @@ namespace URandomGen
             Contract.EndContractBlock();
 #endif
 
-            BigValue length = (BigValue)maxValue - minValue;
-
-            return (long)(_sample64(this, length) + minValue);
+            return (long)(_sample64(this, (BigValue)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -697,7 +680,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (long)_next64(generator, minValue, maxValue);
+            return (long)(_next64(generator, (BigValue)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -721,7 +704,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (long)_next64(generator, 0, maxValue);
+            return (long)_next64(generator, maxValue);
         }
 
         /// <summary>
@@ -759,7 +742,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (long)_next64(generator, minValue, maxValue);
+            return (long)(_next64(generator, (BigValue)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -783,7 +766,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (long)_next64(generator, 0, maxValue);
+            return (long)_next64(generator, maxValue);
         }
 
         /// <summary>
@@ -819,9 +802,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            BigValue length = (BigValue)maxValue - minValue;
-
-            return (ulong)(_sample64(this, length) + minValue);
+            return (ulong)(_sample64(this, (BigValue)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -873,7 +854,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (ulong)_next64(generator, minValue, maxValue);
+            return (ulong)(_next64(generator, (BigValue)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -897,7 +878,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (ulong)_next64(generator, 0, maxValue);
+            return (ulong)_next64(generator, maxValue);
         }
 
         /// <summary>
@@ -935,7 +916,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == minValue || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (ulong)_next64(generator, minValue, maxValue);
+            return (ulong)(_next64(generator, (BigValue)maxValue - minValue) + minValue);
         }
 
         /// <summary>
@@ -959,7 +940,7 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<ulong>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (ulong)_next64(generator, 0, maxValue);
+            return (ulong)_next64(generator, maxValue);
         }
 
         /// <summary>
@@ -1150,7 +1131,7 @@ namespace URandomGen
         public static T[] Shuffle<T>(RandomNumberGenerator generator, IEnumerable<T> collection)
         {
             if (generator == null) throw new ArgumentNullException("generator");
-            return _shuffle(i => (int)_next32(generator, 0, i), collection);
+            return _shuffle(i => (int)_next32(generator, i), collection);
         }
 
         /// <summary>
@@ -1202,7 +1183,7 @@ namespace URandomGen
 #if !NOCONTRACT
             Contract.EndContractBlock();
 #endif
-            _shuffleArray(i => (int)_next32(generator, 0, i), array, 0, array.Length);
+            _shuffleArray(i => (int)_next32(generator, i), array, 0, array.Length);
         }
 
         /// <summary>
@@ -1302,7 +1283,7 @@ namespace URandomGen
         public static T RandomElement<T>(RandomNumberGenerator generator, IEnumerable<T> collection)
         {
             if (generator == null) throw new ArgumentNullException("generator");
-            return _randomElement(i => (int)_next32(generator, 0, i), collection);
+            return _randomElement(i => (int)_next32(generator, i), collection);
         }
 
         /// <summary>
@@ -1429,7 +1410,7 @@ namespace URandomGen
         public static T[] RandomElements<T>(RandomNumberGenerator generator, IEnumerable<T> collection, int length)
         {
             if (generator == null) throw new ArgumentNullException("generator");
-            return _randomElements(i => (int)_next32(generator, 0, i), collection, length);
+            return _randomElements(i => (int)_next32(generator, i), collection, length);
         }
 
         /// <summary>
