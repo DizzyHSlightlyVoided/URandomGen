@@ -166,7 +166,15 @@ namespace URandomGen
 
         private static long _sampleValue(RandomGen generator, long length)
         {
-            return ((length * generator.SampleUInt32()) / max32);
+#if NOBIGINT
+            decimal sample = generator.SampleUInt32();
+
+            return (long)(length * (sample / max32));
+#else
+            BigInteger sample = generator.SampleUInt32()
+
+            return (long)((length * sample) / max32);
+#endif
         }
 
         private static long _next32(RandomNumberGenerator generator, long minValue, long maxValue)
@@ -177,9 +185,20 @@ namespace URandomGen
 
             generator.GetBytes(data);
 
-            long sample = data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16) | ((uint)data[3] << 24);
+#if NOBIGINT
+            decimal
+#else
+            BigInteger
+#endif
+                sample = data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16) | ((uint)data[3] << 24);
 
-            return ((length * sample) / max32) + minValue;
+            return (long)
+#if NOBIGINT
+                (length * (sample / max32))
+#else
+                ((length * sample) / max32)
+#endif
+                + minValue;
         }
 
         /// <summary>
@@ -507,11 +526,13 @@ namespace URandomGen
             if (length == max32)
                 return generator.SampleUInt32();
             if (length <= max32)
-                return (length * generator.SampleUInt32()) / max32;
-
 #if NOBIGINT
+                return (length / max32) * generator.SampleUInt32();
+
             return (length / max64) * generator.SampleUInt64();
 #else
+                return (length * generator.SampleUInt32()) / max32;
+
             return (length * generator.SampleUInt64()) / max64;
 #endif
         }
