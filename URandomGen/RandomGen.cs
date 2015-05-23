@@ -326,7 +326,7 @@ namespace URandomGen
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
         /// </exception>
-        public uint NextUInt32(uint minValue, uint maxValue)
+        public virtual uint NextUInt32(uint minValue, uint maxValue)
         {
             if (minValue > maxValue)
                 base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
@@ -348,7 +348,7 @@ namespace URandomGen
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
         /// </exception>
-        public uint NextUInt32(uint maxValue)
+        public virtual uint NextUInt32(uint maxValue)
         {
 #if !NOCONTRACT
             Contract.Ensures(Contract.Result<uint>() >= 0);
@@ -362,7 +362,7 @@ namespace URandomGen
         /// Returns a nonnegative random number.
         /// </summary>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
-        public uint NextUInt32()
+        public virtual uint NextUInt32()
         {
             return NextUInt32(uint.MaxValue);
         }
@@ -643,7 +643,7 @@ namespace URandomGen
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
         /// </exception>
-        public long Next64(long minValue, long maxValue)
+        public virtual long Next64(long minValue, long maxValue)
         {
             if (minValue > maxValue)
                 base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
@@ -668,7 +668,7 @@ namespace URandomGen
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
         /// </exception>
-        public long Next64(long maxValue)
+        public virtual long Next64(long maxValue)
         {
             if (maxValue < 0)
                 base.Next(-1); //Throw ArgumentOutOfRangeException according to default form.
@@ -677,19 +677,14 @@ namespace URandomGen
             Contract.Ensures(maxValue == 0 || Contract.Result<long>() < maxValue);
             Contract.EndContractBlock();
 #endif
-            return (long)_sample64(this,
-#if NOBIGINT
-                (decimal)maxValue);
-#else
-                (BigInteger)maxValue);
-#endif
+            return (long)_sample64(this, maxValue);
         }
 
         /// <summary>
         /// Returns a nonnegative random number.
         /// </summary>
         /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
-        public long Next64()
+        public virtual long Next64()
         {
             return Next64(long.MaxValue);
         }
@@ -829,7 +824,7 @@ namespace URandomGen
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
         /// </exception>
-        public ulong NextUInt64(ulong minValue, ulong maxValue)
+        public virtual ulong NextUInt64(ulong minValue, ulong maxValue)
         {
             if (minValue > maxValue)
                 base.Next(1, 0); //Throw ArgumentOutOfRangeException according to default form.
@@ -855,7 +850,7 @@ namespace URandomGen
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
         /// </exception>
-        public ulong NextUInt64(ulong maxValue)
+        public virtual ulong NextUInt64(ulong maxValue)
         {
 #if !NOCONTRACT
             Contract.Ensures(Contract.Result<ulong>() >= 0);
@@ -869,7 +864,7 @@ namespace URandomGen
         /// Returns a nonnegative random number.
         /// </summary>
         /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="Int64.MaxValue"/>.</returns>
-        public ulong NextUInt64()
+        public virtual ulong NextUInt64()
         {
             return NextUInt64(ulong.MaxValue);
         }
@@ -1026,7 +1021,7 @@ namespace URandomGen
         /// <exception cref="ArgumentNullException">
         /// <paramref name="buffer"/> is <c>null</c>.
         /// </exception>
-        public void NextNonZeroBytes(byte[] buffer)
+        public virtual void NextNonZeroBytes(byte[] buffer)
         {
             NextNonZeroBytes(this, buffer);
         }
