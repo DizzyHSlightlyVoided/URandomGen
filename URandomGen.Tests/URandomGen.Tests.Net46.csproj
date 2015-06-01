@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{62D76831-0DA4-4EDF-9053-858C1FB0092B}</ProjectGuid>
+    <ProjectGuid>{B656EB7D-0739-4037-B192-5A7F83892F53}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>URandomGen.Tests</RootNamespace>
     <AssemblyName>URandomGen.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Net 4.0\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\Net 4.0\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\Net 4.6\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\Net 4.6\Debug\</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -25,8 +25,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Net 4.0\Release\</OutputPath>
-    <IntermediateOutputPath>obj\Net 4.0\Release\</IntermediateOutputPath>
+    <OutputPath>bin\Net 4.6\Release\</OutputPath>
+    <IntermediateOutputPath>obj\Net 4.6\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -44,9 +44,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\URandomGen\URandomGen.Net40.csproj">
-      <Project>{be5cbf04-f927-4f39-8e8a-88f3ddf31999}</Project>
-      <Name>URandomGen.Net40</Name>
+    <ProjectReference Include="..\URandomGen\URandomGen.Net46.csproj">
+      <Project>{2d805b0c-ce46-4d8b-a627-064d52febf22}</Project>
+      <Name>URandomGen.Net46</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
