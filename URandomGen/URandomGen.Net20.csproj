@@ -16,6 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Net 2.0\Debug\</OutputPath>
+    <IntermediateOutputPath>bin\Net 2.0\Debug\</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;NET_2_0;NOCONTRACT;NOBIGINT;NOLINQ;NOFUNC</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,6 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Net 2.0\Release\</OutputPath>
+    <IntermediateOutputPath>bin\Net 2.0\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NET_2_0;NOCONTRACT;NOBIGINT;NOLINQ;NOFUNC</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
