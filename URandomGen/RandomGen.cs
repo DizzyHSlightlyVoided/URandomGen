@@ -1031,7 +1031,7 @@ namespace URandomGen
                 count = collection.ToString().Length;
                 return true;
             }
-#if NET_4_5
+#if IREADONLY
             else if (collection is IReadOnlyCollection<T>)
             {
                 count = ((IReadOnlyCollection<T>)collection).Count;
@@ -1233,7 +1233,7 @@ namespace URandomGen
 
             if (typeof(T).Equals(typeof(char)) && collection is string)
                 return (T)(object)collection.ToString()[index];
-#if NET_4_5
+#if IREADONLY
             if (collection is IReadOnlyList<T>)
                 return ((IReadOnlyList<T>)collection)[index];
 #endif
@@ -1341,7 +1341,7 @@ namespace URandomGen
                 for (int i = 0; i < length; i++)
                     result[i] = (T)((object)str[nextInt32(str.Length)]);
             }
-#if NET_4_5
+#if IREADONLY
             else if (collection is IReadOnlyList<T>)
             {
                 IReadOnlyList<T> list = (IReadOnlyList<T>)collection;

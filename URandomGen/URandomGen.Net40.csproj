@@ -18,7 +18,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Net 4.0\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Net 4.0\Debug\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_4_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Net 4.0\Debug\URandomGen.XML</DocumentationFile>
@@ -28,7 +28,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Net 4.0\Release\</OutputPath>
     <IntermediateOutputPath>obj\Net 4.0\Release\</IntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET_4_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Net 4.0\Release\URandomGen.XML</DocumentationFile>
