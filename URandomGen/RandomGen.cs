@@ -159,7 +159,7 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// Return a random number between 0.0 and 1.0.
+        /// Returns a random number between 0.0 and 1.0.
         /// </summary>
         /// <returns>A random number which is greater than or equal to 0.0 and which is less than 1.0.</returns>
         protected sealed override double Sample()
