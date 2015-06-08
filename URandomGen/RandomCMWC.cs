@@ -35,6 +35,9 @@ See http://creativecommons.org/ and LICENSE-ThirdParty.md for more information.
 
 using System;
 using System.Collections.Generic;
+#if !NOCONTRACT
+using System.Diagnostics.Contracts;
+#endif
 
 namespace URandomGen
 {
@@ -59,6 +62,9 @@ namespace URandomGen
         public RandomCMWC(IEnumerable<uint> seeds)
         {
             if (seeds == null) throw new ArgumentNullException("seeds");
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
             _seedArray = new uint[_seedCount];
             _curIndex = _seedMask;
 
