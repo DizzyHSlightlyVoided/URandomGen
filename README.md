@@ -11,11 +11,15 @@ Each random generator is derived from the [`System.Random`](http://msdn.microsof
 
 The Generators
 --------------
+The base class is `URandomGen.RandomGen`; all other classes in this library are derived from this class.
+
 The `RandomCMWC` class is based on the [complementary multiply-with-carry](http://en.wikipedia.org/wiki/Multiply-with-carry) random number generator invented by George Marsaglia, described [here](http://digitalcommons.wayne.edu/cgi/viewcontent.cgi?article=1725&context=jmasm); the implementation is derived from [a post](https://groups.google.com/d/msg/comp.lang.C/qZFQgKRCQGg/rmPkaRHqxOMJ) which Marsaglia made to the comp.lang.c newsgroup in 2003.
 
 The `RandomXorshift` class is based on the [xorshift](http://en.wikipedia.org/wiki/Xorshift) random number generator, also invented by George Marsaglia, described [here](http://www.jstatsoft.org/v08/i14/paper). The implementation is derived from the aforementioned comp.lang.c post, but with 32 seeds stored instead of 5.
 
 The `RandomMersenne` class is based on the [Mersenne Twister](http://en.wikipedia.org/wiki/Mersenne_Twister), developed by Makoto Matsumoto and Takuji Nishimura. The name comes from the fact that its period length is chosen to be a Mersenne prime. The class is mostly a port of Matsumodo and Nishimura's MT19937 implementation, which is based on the Mersenne prime 2<sup>19937</sup>-1.
+
+The `RandomCrypt` class simply uses a [`System.Security.Cryptography.RandomNumberGenerator`](https://msdn.microsoft.com/en-us/library/system.security.cryptography.randomnumbergenerator.aspx) to generate its random values.
 
 Licenses
 --------
