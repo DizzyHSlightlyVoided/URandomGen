@@ -9,7 +9,7 @@
 
 Creative Commons
 ----------------
-[RandomXorshift.cs](URandomGen/RandomXorshift.cs) and [RandomCMWC.cs](URandomGen/RandomCMWC.cs) use code derived from, respectively, the Wikipedia articles [Xorshift](http://en.wikipedia.org/wiki/Xorshift) and [Multiply-with-carry](http://en.wikipedia.org/wiki/Multiply-with-carry), the text of which is released under a [Creative Commons Attribution-ShareAlike License](http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License).
+[RandomCMWC.cs](URandomGen/RandomCMWC.cs) uses code derived from a [previous version](http://en.wikipedia.org/w/index.php?title=Multiply-with-carry&oldid=635182796#Implementation) of the Wikipedia article [Multiply-with-carry](http://en.wikipedia.org/wiki/Multiply-with-carry), the text of which is released under a [Creative Commons Attribution-ShareAlike License](http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License).
 
 BSD License
 -----------

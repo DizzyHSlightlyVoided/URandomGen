@@ -25,11 +25,6 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-This file uses code derived from the content of the Wikipedia article
-http://en.wikipedia.org/wiki/Xorshift
-This article is released under a Creative Commons Attribution Share-Alike license.
-See http://creativecommons.org/ and LICENSE-ThirdParty.md for more information.
 */
 #endregion
 
@@ -42,7 +37,7 @@ using System.Diagnostics.Contracts;
 namespace URandomGen
 {
     /// <summary>
-    /// A random number generator based on the xorshift* algorithm.
+    /// A random number generator based on the xorshift algorithm.
     /// </summary>
     public class RandomXorshift : RandomGen
     {
@@ -72,7 +67,7 @@ namespace URandomGen
 
             foreach (uint c in seeds)
             {
-                prev = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += c + (curCount * (_generate(c, prev) + c));
+                prev = _seedArray[_curIndex = (_curIndex + 1) & _seedMask] += c + (curCount ^ c ^ prev);
 
                 curCount++;
             }
@@ -82,10 +77,8 @@ namespace URandomGen
 
             for (int i = 0; i < (_seedCount * 2); i++)
             {
-                uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
-
-                uint result = (_generate(prev, seedW) * 413612) + (ushort.MaxValue * 3);
-                prev = _seedArray[_curIndex] = (prev == 0 && result == 0) ? uint.MaxValue / 5 : result;
+                uint result = SampleUInt32();
+                _seedArray[_curIndex] = result;
             }
         }
 
@@ -119,29 +112,24 @@ namespace URandomGen
         }
 
 
-        private static uint _generate(uint seedX, uint seedW)
-        {
-            uint seedT = seedX ^ (seedX << 11);
-
-            return seedW ^ (seedW >> 19) ^ seedT ^ (seedT >> 8);
-        }
-
         /// <summary>
         /// This method is used by other methods to generate random numbers.
         /// </summary>
         /// <returns>A 32-bit unsigned integer between 0 and <see cref="UInt32.MaxValue"/>.</returns>
         protected override uint SampleUInt32()
         {
-            uint seedX = _seedArray[_curIndex];
-            uint seedW = _seedArray[_curIndex = (_curIndex + 1) & _seedMask];
-
-            uint result = _seedArray[_curIndex] = _generate(seedX, seedW) * 69069;
+            uint x = _seedArray[_curIndex];
+            uint t = x ^ (x >> 7);
+            uint y = _seedArray[(_curIndex + 2) & _seedMask];
+            uint v = _seedArray[(_curIndex - 1) & _seedMask];
+            _seedArray[_curIndex] = v = (v ^ (v << 6)) ^ (t ^ (t << 13));
 
             //Really unlikely edge-case, and the circumstances where it would even be an issue are rare as all get out, but why risk it?
             if (IsNextThreeZero(_seedArray, _curIndex))
                 _seedArray[_curIndex] = uint.MaxValue / 7;
 
-            return result;
+            _curIndex = (_curIndex + 1) & _seedMask;
+            return (y + y + 1) * v;
         }
     }
 }
