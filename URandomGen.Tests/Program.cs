@@ -42,6 +42,9 @@ namespace URandomGen.Tests
 {
     class Program
     {
+        const int _imgSize = 640;
+        const int _maxVals = _imgSize * _imgSize / 32;
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -49,8 +52,6 @@ namespace URandomGen.Tests
 
             do
             {
-                const int _imgSize = 640;
-                const int _maxVals = _imgSize * _imgSize / 32;
 
                 Console.WriteLine("Each test involves the generation of " + _maxVals + " random numbers; however, not all values will be used for all tests.");
                 Console.WriteLine("1. RandomCMWC");
@@ -66,25 +67,28 @@ namespace URandomGen.Tests
                 key = ReadKey();
 
                 Random generator = null;
+                Func<Random> genGenerator = null;
+                Action closeGenerator = null;
 
                 switch (key)
                 {
                     case ConsoleKey.D1:
-                        generator = new RandomCMWC();
+                        genGenerator = () => new RandomCMWC();
                         break;
                     case ConsoleKey.D2:
-                        generator = new RandomMersenne();
+                        genGenerator = () => new RandomMersenne();
                         break;
                     case ConsoleKey.D3:
-                        generator = new RandomXorshift();
+                        genGenerator = () => new RandomXorshift();
                         break;
 #if !NORNG
                     case ConsoleKey.D4:
-                        generator = new RandomCrypt(RandomNumberGenerator.Create());
+                        genGenerator = () => new RandomCrypt(RandomNumberGenerator.Create());
+                        closeGenerator = () => ((RandomCrypt)generator).Generator.Dispose();
                         break;
 #endif
                     case ConsoleKey.R:
-                        generator = new Random();
+                        genGenerator = () => new Random();
                         break;
                     case ConsoleKey.G:
                         {
@@ -205,41 +209,24 @@ namespace URandomGen.Tests
                         break;
                     default:
                         generator = null;
+                        genGenerator = null;
+                        closeGenerator = null;
                         break;
                 }
 
-                if (generator != null)
+                if (genGenerator != null)
                 {
-                    Console.Write("Generating ... ");
-
-                    uint[] results = new uint[_maxVals];
-
-                    uint min = uint.MaxValue, max = 0;
-
-                    for (int i = 0; i < _maxVals; i++)
-                    {
-                        uint curVal = results[i] = RandomGen.NextUInt32(generator);
-                        min = Math.Min(curVal, min);
-                        max = Math.Max(curVal, max);
-                    }
-
-                    double avg = results.Average(i => i);
-
-                    Console.WriteLine("done.");
-
-                    const uint maxEq1 = uint.MaxValue;
-                    const uint baseMedian = maxEq1 / 2;
-                    const double maxInt = maxEq1;
-
-                    Bitmap bmpBitmap = null, bmpGraphs = null, bmpGraphsBig = null;
+                    uint[] results;
+                    uint max;
+                    double avg, maxInt, maxDelta, avgDelta, minDelta;
+                    Bitmap bmpBitmap = null;
+                    Bitmap bmpGraphs = null;
+                    Bitmap bmpGraphsBig = null;
+                    BuildData(genGenerator, out generator, out results, out max, out avg, out maxInt, out maxDelta, out avgDelta, out minDelta);
 
                     string pathBitmap = generator.GetType().Name + ".Bitmap.png";
                     string pathGraphs = generator.GetType().Name + ".Graphs.png";
                     string pathGraphsBig = generator.GetType().Name + ".GraphsBig.png";
-
-                    double maxDelta = (maxEq1 - max) / maxInt;
-                    double avgDelta = Math.Abs(baseMedian - avg) / maxInt;
-                    double minDelta = min / maxInt;
 
                     do
                     {
@@ -256,6 +243,7 @@ namespace URandomGen.Tests
                         Console.WriteLine("2. Graphs, Scatterplot, and Histograms for first 1000 (saved in working dir as {0})", pathGraphs);
                         Console.WriteLine("3. Graphs, Scatterplot, and Histograms for All " + _maxVals + " (saved in working dir as {0})", pathGraphsBig);
                         Console.WriteLine("4. Shuffle test");
+                        Console.WriteLine("R. New {0} instance", generator.GetType().Name);
                         Console.WriteLine("X. Return");
                         key = ReadKey();
 
@@ -298,21 +286,62 @@ namespace URandomGen.Tests
                                     Console.WriteLine();
                                 }
                                 break;
+                            case ConsoleKey.R:
+                                CloseGraphs(bmpBitmap, bmpGraphsBig, bmpGraphsBig, closeGenerator);
+                                BuildData(genGenerator, out generator, out results, out max, out avg, out maxInt, out maxDelta, out avgDelta, out minDelta);
+                                break;
                         }
                     }
                     while (key != ConsoleKey.X);
                     key = 0;
-
-                    if (bmpBitmap != null)
-                        bmpBitmap.Dispose();
-#if !NORNG
-                    if (generator is RandomCrypt)
-                        ((RandomCrypt)generator).Generator.Dispose();
-#endif
+                    CloseGraphs(bmpBitmap, bmpGraphs, bmpGraphsBig, closeGenerator);
                 }
 
             }
             while (key != ConsoleKey.X);
+        }
+
+        private static void CloseGraphs(Bitmap bmpBitmap, Bitmap bmpGraphs, Bitmap bmpGraphsBig, Action closeGenerator)
+        {
+            if (bmpBitmap != null)
+                bmpBitmap.Dispose();
+            if (bmpGraphs != null)
+                bmpGraphs.Dispose();
+            if (bmpGraphsBig != null)
+                bmpGraphsBig.Dispose();
+            if (closeGenerator != null)
+                closeGenerator();
+        }
+
+        private static void BuildData(Func<Random> genGenerator, out Random generator, out uint[] results, out uint max,
+            out double avg, out double maxInt, out double maxDelta, out double avgDelta, out double minDelta)
+        {
+            Console.Write("Generating ... ");
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+            generator = genGenerator();
+
+            results = new uint[_maxVals];
+            uint min = uint.MaxValue;
+            max = 0;
+            for (int i = 0; i < _maxVals; i++)
+            {
+                uint curVal = results[i] = RandomGen.NextUInt32(generator);
+                min = Math.Min(curVal, min);
+                max = Math.Max(curVal, max);
+            }
+
+            avg = results.Average(i => i);
+            sw.Stop();
+
+            Console.WriteLine("done in " + sw.Elapsed.TotalMilliseconds + "ms.");
+
+            const uint maxEq1 = uint.MaxValue;
+            const uint baseMedian = maxEq1 / 2;
+            maxInt = maxEq1;
+            maxDelta = (maxEq1 - max) / maxInt;
+            avgDelta = Math.Abs(baseMedian - avg) / maxInt;
+            minDelta = min / maxInt;
         }
 
         private static IEnumerable<int> Iteration()
