@@ -1006,7 +1006,7 @@ namespace URandomGen
             if (generator == null) throw new ArgumentNullException("generator");
             if (buffer == null) throw new ArgumentNullException("buffer");
 #if !NOCONTRACT
-            Contract.Ensures(Array.IndexOf(Contract.ValueAtReturn(out buffer), 0) < 0);
+            Contract.Ensures(Array.IndexOf<byte>(Contract.ValueAtReturn(out buffer), 0) < 0);
             Contract.EndContractBlock();
 #endif
             const int maxBytes = byte.MaxValue + 1;
@@ -1312,7 +1312,12 @@ namespace URandomGen
             if (collection == null) throw new ArgumentNullException("collection");
             using (IEnumerator<T> enumer = collection.GetEnumerator())
                 if (!enumer.MoveNext()) throw new ArgumentException("The collection is empty.", "collection");
-            if (length < 0) throw new ArgumentOutOfRangeException("length", length, "The specified value is less than 0.");
+            if (length < 0)
+                throw new ArgumentOutOfRangeException("length",
+#if !NOARGRANGE3
+                    length,
+#endif
+                    "The specified value is less than 0.");
 
             T[] result = new T[length]; //May throw OutOfMemoryException
 #if !NOCONTRACT
