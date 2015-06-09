@@ -34,7 +34,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+#if !NORNG
 using System.Security.Cryptography;
+#endif
 
 namespace URandomGen.Tests
 {
@@ -54,7 +56,9 @@ namespace URandomGen.Tests
                 Console.WriteLine("1. RandomCMWC");
                 Console.WriteLine("2. RandomMersenne");
                 Console.WriteLine("3. RandomXorShift");
+#if !NORNG
                 Console.WriteLine("4. RandomCrypt with RandomNumberGenerator.Create()");
+#endif
                 Console.WriteLine("R. System.Random, for comparison");
                 Console.WriteLine("G. Test RandomGen methods");
                 Console.WriteLine("X. Exit");
@@ -74,9 +78,11 @@ namespace URandomGen.Tests
                     case ConsoleKey.D3:
                         generator = new RandomXorshift();
                         break;
+#if !NORNG
                     case ConsoleKey.D4:
                         generator = new RandomCrypt(RandomNumberGenerator.Create());
                         break;
+#endif
                     case ConsoleKey.R:
                         generator = new Random();
                         break;
@@ -115,7 +121,7 @@ namespace URandomGen.Tests
                                 good &= _testLocal(curItem, new RandomSequence().Next64);
                                 good &= _testStatic(curItem, RandomGen.Next64);
                             }
-
+#if !NORNG
                             //RandomNumberGenerator sequence
                             //int
                             foreach (Tuple<int, int> curPair in _test32minmax)
@@ -169,7 +175,7 @@ namespace URandomGen.Tests
                                 foreach (long curItem in _test64max)
                                     good &= _testRNG(curItem, rGenSec, RandomGen.Next64);
                             }
-
+#endif
                             if (good) Console.WriteLine("All tests passed.");
                             else Console.WriteLine("Some errors ocurred. See above for more information.");
 
@@ -299,9 +305,10 @@ namespace URandomGen.Tests
 
                     if (bmpBitmap != null)
                         bmpBitmap.Dispose();
-
+#if !NORNG
                     if (generator is RandomCrypt)
                         ((RandomCrypt)generator).Generator.Dispose();
+#endif
                 }
 
             }
@@ -400,7 +407,7 @@ namespace URandomGen.Tests
             generator = new Random(1);
             return _testResult<T>(default(T), max, () => genRand(generator, max)) && result;
         }
-
+#if !NORNG
         private static bool _testRNG<T>(T min, T max, RandomNumberGenerator generator, Func<RandomNumberGenerator, T, T, T> genRand)
             where T : struct, IComparable<T>
         {
@@ -414,7 +421,7 @@ namespace URandomGen.Tests
             Console.WriteLine("static RandomGen.{0}(RandomNumberGenerator, {1});", genRand.Method.Name, max);
             return _testResult<T>(default(T), max, () => genRand(generator, max));
         }
-
+#endif
         private static ConsoleKey ReadKey()
         {
             Console.Write("> ");
@@ -591,7 +598,7 @@ namespace URandomGen.Tests
         {
             return _seeds[_curIndex = (_curIndex + 1) & _seedMask];
         }
-
+#if !NORNG
         public class RNGSequence : RandomNumberGenerator
         {
             private int _curIndex = _seedMask;
@@ -638,5 +645,6 @@ namespace URandomGen.Tests
                 }
             }
         }
+#endif
     }
 }
