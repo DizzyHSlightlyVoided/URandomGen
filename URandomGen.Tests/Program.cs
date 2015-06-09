@@ -55,7 +55,7 @@ namespace URandomGen.Tests
                 Console.WriteLine("2. RandomMersenne");
                 Console.WriteLine("3. RandomXorShift");
                 Console.WriteLine("4. RandomCrypt with RandomNumberGenerator.Create()");
-                Console.WriteLine("S. System.Random, for comparison");
+                Console.WriteLine("R. System.Random, for comparison");
                 Console.WriteLine("G. Test RandomGen methods");
                 Console.WriteLine("X. Exit");
 
@@ -77,7 +77,7 @@ namespace URandomGen.Tests
                     case ConsoleKey.D4:
                         generator = new RandomCrypt(RandomNumberGenerator.Create());
                         break;
-                    case ConsoleKey.S:
+                    case ConsoleKey.R:
                         generator = new Random();
                         break;
                     case ConsoleKey.G:
