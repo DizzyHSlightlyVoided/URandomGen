@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Collections.Generic;
-#if !PCL
+#if !NOCRYPT
 using System.Security.Cryptography;
 #endif
 #if !NOCONTRACT
@@ -178,7 +178,7 @@ namespace URandomGen
             return (long)((length * sample) / max32);
 #endif
         }
-#if !PCL
+#if !NOCRYPT
         internal static uint SampleGen32(RandomNumberGenerator generator)
         {
             byte[] data = new byte[sizeof(uint)];
@@ -257,7 +257,7 @@ namespace URandomGen
         {
             return Next(int.MaxValue);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
@@ -464,7 +464,7 @@ namespace URandomGen
         {
             return NextUInt32(generator, uint.MaxValue);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
@@ -576,7 +576,7 @@ namespace URandomGen
             return ((length * result) / max64);
 #endif
         }
-#if !PCL
+#if !NOCRYPT
         private static BigValue _next64(RandomNumberGenerator generator, BigValue length)
         {
             if (length < max32)
@@ -723,7 +723,7 @@ namespace URandomGen
             return Next64(generator, long.MaxValue);
         }
 
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
@@ -897,7 +897,7 @@ namespace URandomGen
         {
             return NextUInt64(generator, ulong.MaxValue);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
@@ -1121,7 +1121,7 @@ namespace URandomGen
             if (generator == null) throw new ArgumentNullException("generator");
             return _shuffle(generator.Next, collection);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns all elements in the specified collection in random order.
         /// </summary>
@@ -1170,7 +1170,7 @@ namespace URandomGen
 #endif
             _shuffleArray(generator.Next, array, 0, array.Length);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Shuffles all elements in the specified array.
         /// </summary>
@@ -1270,7 +1270,7 @@ namespace URandomGen
 
             return _randomElement(generator.Next, collection);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns a random element from the specified collection.
         /// </summary>
@@ -1395,7 +1395,7 @@ namespace URandomGen
             if (generator == null) throw new ArgumentNullException("generator");
             return _randomElements(generator.Next, collection, length);
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns an array containing elements randomly copied from the specified collection.
         /// </summary>
@@ -1469,7 +1469,7 @@ namespace URandomGen
         {
             return new string(RandomElements(generator, collection, length));
         }
-#if !PCL
+#if !NOCRYPT
         /// <summary>
         /// Returns a new string containing characters randomly copied from the specified collection.  
         /// </summary>
