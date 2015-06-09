@@ -287,28 +287,37 @@ namespace URandomGen.Tests
                                 }
                                 break;
                             case ConsoleKey.R:
-                                CloseGraphs(bmpBitmap, bmpGraphsBig, bmpGraphsBig, closeGenerator);
+                                CloseGraphs(ref bmpBitmap, ref bmpGraphsBig, ref bmpGraphsBig, closeGenerator);
                                 BuildData(genGenerator, out generator, out results, out max, out avg, out maxInt, out maxDelta, out avgDelta, out minDelta);
                                 break;
                         }
                     }
                     while (key != ConsoleKey.X);
                     key = 0;
-                    CloseGraphs(bmpBitmap, bmpGraphs, bmpGraphsBig, closeGenerator);
+                    CloseGraphs(ref bmpBitmap, ref bmpGraphs, ref bmpGraphsBig, closeGenerator);
                 }
 
             }
             while (key != ConsoleKey.X);
         }
 
-        private static void CloseGraphs(Bitmap bmpBitmap, Bitmap bmpGraphs, Bitmap bmpGraphsBig, Action closeGenerator)
+        private static void CloseGraphs(ref Bitmap bmpBitmap, ref Bitmap bmpGraphs, ref Bitmap bmpGraphsBig, Action closeGenerator)
         {
             if (bmpBitmap != null)
+            {
                 bmpBitmap.Dispose();
+                bmpBitmap = null;
+            }
             if (bmpGraphs != null)
+            {
                 bmpGraphs.Dispose();
+                bmpGraphs = null;
+            }
             if (bmpGraphsBig != null)
+            {
                 bmpGraphsBig.Dispose();
+                bmpGraphsBig = null;
+            }
             if (closeGenerator != null)
                 closeGenerator();
         }
