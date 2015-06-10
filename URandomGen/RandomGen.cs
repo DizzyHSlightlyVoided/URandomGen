@@ -54,11 +54,11 @@ namespace URandomGen
     public abstract class RandomGen : Random
     {
         /// <summary>
-        /// Returns an array containing a set of default seed values.
+        /// Returns an array containing a set of default time-based seed values.
         /// </summary>
-        /// <returns>An array containing four elements: <see cref="Environment.TickCount"/>, the upper 32 bits of the <see cref="DateTime.Ticks"/>
-        /// property of <see cref="DateTime.Now"/>, the lower 32 bits thereof, and the sum of all previous values, all converted to <see cref="UInt32"/>
-        /// values.</returns>
+        /// <returns>An array containing four elements: <see cref="Environment.TickCount"/>, the <see cref="DateTime.Ticks"/>
+        /// property of <see cref="DateTime.Now"/> divided into two 32-bit values with the upper 32 bits first, and the sum of
+        /// all previous values, all converted to <see cref="uint"/> values.</returns>
         public static uint[] DefaultSeeds()
         {
             uint tickCount = (uint)Environment.TickCount;
@@ -78,7 +78,7 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// Returns a single default seed.
+        /// Returns a single time-based default seed.
         /// </summary>
         /// <returns>The lower 32 bits of the <see cref="DateTime.Ticks"/> property of <see cref="DateTime.Now"/>.</returns>
         public static uint DefaultSingleSeed()

@@ -1,4 +1,90 @@
-﻿### `RandomGen.Next()`
+﻿See also the documentation for [`System.Random`](https://msdn.microsoft.com/en-us/library/system.random.aspx).
+
+Constructors
+------------
+### All Except `RandomCrypt`
+```C#
+new RandomCMWC(uint seed);
+new RandomMersenne(uint seed);
+new RandomWichHill(uint seed);
+new RandomXorshift(uint seed);
+```
+Initializes a random number generator with the specified unsigned 32-bit integer seed.
+
+```C#
+new RandomCMWC(IEnumerable<uint> seeds);
+new RandomMersenne(IEnumerable<uint> seeds);
+new RandomWichHill(IEnumerable<uint> seeds);
+new RandomXorshift(IEnumerable<uint> seeds);
+```
+Initializes a random number generator with the specified collection of unsigned 32-bit integer seeds. Throws [`ArgmunentNullException`](https://msdn.microsoft.com/en-us/library/system.argumentnullexception.aspx) when `seeds` is null.
+
+```C#
+new RandomCMWC(params uint[] seeds);
+new RandomMersenne(params uint[] seeds);
+new RandomWichHill(params uint[] seeds);
+new RandomXorshift(params uint[] seeds);
+```
+Initializes a random number generator with the specified array of unsigned 32-bit integer seeds. Throws [`ArgmunentNullException`](https://msdn.microsoft.com/en-us/library/system.argumentnullexception.aspx) when `seeds` is null.
+
+```C#
+new RandomCMWC(int seed);
+new RandomMersenne(int seed);
+new RandomWichHill(int seed);
+new RandomXorshift(int seed);
+```
+Initializes a random number generator with the specified signed 32-bit integer seed.
+
+```C#
+new RandomCMWC(IEnumerable<int> seeds);
+new RandomMersenne(IEnumerable<int> seeds);
+new RandomWichHill(IEnumerable<int> seeds);
+new RandomXorshift(IEnumerable<int> seeds);
+```
+Initializes a random number generator with the specified collection of signed 32-bit integer seeds. Throws [`ArgmunentNullException`](https://msdn.microsoft.com/en-us/library/system.argumentnullexception.aspx) when `seeds` is null.
+
+```C#
+new RandomCMWC(IEnumerable<int> seeds);
+new RandomMersenne(IEnumerable<int> seeds);
+new RandomWichHill(IEnumerable<int> seeds);
+new RandomXorshift(IEnumerable<int> seeds);
+```
+Initializes a random number generator with the specified array of signed 32-bit integer seeds. Throws [`ArgmunentNullException`](https://msdn.microsoft.com/en-us/library/system.argumentnullexception.aspx) when `seeds` is null.
+
+```C#
+new RandomCMWC();
+new RandomMersenne();
+new RandomWichHill();
+new RandomXorshift();
+```
+Initializes a random number generator using the static method `RandomGen.DefaultSeeds()`.
+
+### `RandomCrypt` Constructor
+
+```C#
+new RandomCrypt(RandomNumberGenerator generator);
+```
+Initializes a `RandomCrypt` generator with the specified [`RandomNumberGenerator`](https://msdn.microsoft.com/en-us/library/system.security.cryptography.randomnumbergenerator.aspx). Throws [`ArgmunentNullException`](https://msdn.microsoft.com/en-us/library/system.argumentnullexception.aspx) when `generator` is null.
+
+Methods
+-------
+### `RandomGen.DefaultSingleSeed()`
+```C#
+public static uint DefaultSingleSeed();
+```
+Returns a single time-based default seed, specifically the lower 32 bits of the [`DateTime.Ticks`](https://msdn.microsoft.com/en-us/library/system.datetime.ticks.aspx) property of [`DateTime.Now`](https://msdn.microsoft.com/en-us/library/system.datetime.now.aspx).
+
+### `RandomGen.DefaultSeeds()`
+```C#
+public static uint[] DefaultSeeds();
+```
+Returns an array containing time-based default seed values, all casted to unsigned 32-bit integer values:
+
+* [`Environment.TickCount`](https://msdn.microsoft.com/en-us/library/system.environment.tickcount.aspx),
+* The [`DateTime.Ticks`](https://msdn.microsoft.com/en-us/library/system.datetime.ticks.aspx) property of [`DateTime.Now`](https://msdn.microsoft.com/en-us/library/system.datetime.now.aspx) divided into two 32 bit values with the upper 32 bits first, and
+* The sum of all three preceding values.
+
+### `RandomGen.Next()`
 ```C#
 public static int Next64(RandomNumberGenerator generator);
 public static int Next64(RandomNumberGenerator generator, long maxValue);
