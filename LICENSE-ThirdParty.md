@@ -9,7 +9,7 @@
 
 Creative Commons
 ----------------
-[RandomCMWC.cs](URandomGen/RandomCMWC.cs) uses code derived from a [previous version](http://en.wikipedia.org/w/index.php?title=Multiply-with-carry&oldid=635182796#Implementation) of the Wikipedia article [Multiply-with-carry](http://en.wikipedia.org/wiki/Multiply-with-carry), the text of which is released under a [Creative Commons Attribution-ShareAlike License](http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License).
+[RandomCMWC.cs](URandomGen/RandomCMWC.cs) and [RandomWichHill.cs](URandomGen/RandomWichHill.cs) respectively use code derived from a [previous version](http://en.wikipedia.org/w/index.php?title=Multiply-with-carry&oldid=635182796#Implementation) of the Wikipedia article [Multiply-with-carry](http://en.wikipedia.org/wiki/Multiply-with-carry), and [Wichman-Hill](https//en.wikipedia.org/wiki/Wichmann-Hill), the text of which is released under a [Creative Commons Attribution-ShareAlike License](http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License).
 
 BSD License
 -----------

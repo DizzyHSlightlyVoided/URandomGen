@@ -41,6 +41,7 @@
     <Compile Include="RandomGen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomMersenne.cs" />
+    <Compile Include="RandomWichHill.cs" />
     <Compile Include="RandomXorshift.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
