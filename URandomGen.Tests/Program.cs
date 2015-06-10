@@ -52,13 +52,13 @@ namespace URandomGen.Tests
 
             do
             {
-
                 Console.WriteLine("Each test involves the generation of " + _maxVals + " random numbers; however, not all values will be used for all tests.");
                 Console.WriteLine("1. RandomCMWC");
                 Console.WriteLine("2. RandomMersenne");
                 Console.WriteLine("3. RandomXorShift");
+                Console.WriteLine("4. RandomWichHill");
 #if !NORNG
-                Console.WriteLine("4. RandomCrypt with RandomNumberGenerator.Create()");
+                Console.WriteLine("5. RandomCrypt with RandomNumberGenerator.Create()");
 #endif
                 Console.WriteLine("R. System.Random, for comparison");
                 Console.WriteLine("G. Test RandomGen methods");
@@ -81,8 +81,11 @@ namespace URandomGen.Tests
                     case ConsoleKey.D3:
                         genGenerator = () => new RandomXorshift();
                         break;
-#if !NORNG
                     case ConsoleKey.D4:
+                        genGenerator = () => new RandomWichHill();
+                        break;
+#if !NORNG
+                    case ConsoleKey.D5:
                         genGenerator = () => new RandomCrypt(RandomNumberGenerator.Create());
                         closeGenerator = () => ((RandomCrypt)generator).Generator.Dispose();
                         break;
