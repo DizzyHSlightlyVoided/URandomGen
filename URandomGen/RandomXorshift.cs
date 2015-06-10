@@ -104,6 +104,39 @@ namespace URandomGen
         }
 
         /// <summary>
+        /// Creates a new instance using the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        public RandomXorshift(IEnumerable<int> seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        public RandomXorshift(params int[] seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified seed.
+        /// </summary>
+        /// <param name="seed">A 32-bit seed used to initialize the random number generator.</param>
+        public RandomXorshift(int seed)
+            : this(unchecked((uint)seed))
+        {
+        }
+
+        /// <summary>
         /// Creates a new instance using <see cref="RandomGen.DefaultSeeds()"/>.
         /// </summary>
         public RandomXorshift()

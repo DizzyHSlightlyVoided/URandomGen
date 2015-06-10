@@ -83,6 +83,39 @@ namespace URandomGen
         /// <exception cref="ArgumentNullException">
         /// <paramref name="seeds"/> is <c>null</c>.
         /// </exception>
+        public RandomMersenne(IEnumerable<int> seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        public RandomMersenne(params int[] seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified seed.
+        /// </summary>
+        /// <param name="seed">A 32-bit seed used to initialize the random number generator.</param>
+        public RandomMersenne(int seed)
+            : this(unchecked((uint)seed))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
         public RandomMersenne(IEnumerable<uint> seeds)
             : this(_toArray(seeds))
         {

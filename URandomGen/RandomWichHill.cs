@@ -95,13 +95,37 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// Creates a new instance using <see cref="RandomGen.DefaultSeeds()"/>.
+        /// Creates a new instance using the specified collection of seeds.
         /// </summary>
-        public RandomWichHill()
-            : this((IEnumerable<uint>)DefaultSeeds())
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        public RandomWichHill(IEnumerable<int> seeds)
+            : this(ToUIntIterator(seeds))
         {
         }
 
+        /// <summary>
+        /// Creates a new instance using the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        public RandomWichHill(params int[] seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified seed.
+        /// </summary>
+        /// <param name="seed">A 32-bit seed used to initialize the random number generator.</param>
+        public RandomWichHill(int seed)
+            : this(unchecked((uint)seed))
+        {
+        }
 
         /// <summary>
         /// Creates a new instance using the specified seed.
@@ -111,6 +135,15 @@ namespace URandomGen
             : this((IEnumerable<uint>)new uint[] { seed })
         {
         }
+
+        /// <summary>
+        /// Creates a new instance using <see cref="RandomGen.DefaultSeeds()"/>.
+        /// </summary>
+        public RandomWichHill()
+            : this((IEnumerable<uint>)DefaultSeeds())
+        {
+        }
+
 
         /// <summary>
         /// This method is used by other methods to generate random 32-bit numbers.

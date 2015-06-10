@@ -135,6 +135,18 @@ namespace URandomGen
             return buffer;
         }
 #endif
+
+        internal static IEnumerable<uint> ToUIntIterator(IEnumerable<int> seeds)
+        {
+            if (seeds == null) throw new ArgumentNullException("seeds");
+#if !NOCONTRACT
+            Contract.Ensures(Contract.Result<IEnumerable<uint>>() != null);
+            Contract.EndContractBlock();
+#endif
+            foreach (int value in seeds)
+                yield return unchecked((uint)value);
+        }
+
         internal static IEnumerable<T> ArrayOffset<T>(T[] array, int offset)
         {
             for (int i = offset; i < array.Length; i++)
