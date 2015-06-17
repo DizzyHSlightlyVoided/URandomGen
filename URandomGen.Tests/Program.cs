@@ -206,7 +206,7 @@ namespace URandomGen.Tests
                             if (errors.Count == 0)
                                 Console.WriteLine("Both shuffle methods are equivalent!");
                             else
-                                Console.WriteLine("Failed starting at index " + errors.Count);
+                                Console.WriteLine("Failed starting at index " + errors[0]);
                             Console.WriteLine();
                         }
                         break;
