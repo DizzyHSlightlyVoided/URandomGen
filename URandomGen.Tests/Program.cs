@@ -134,53 +134,53 @@ namespace URandomGen.Tests
                             foreach (Tuple<int, int> curPair in _test32minmax)
                             {
                                 using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next);
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomCrypt.Next);
                             }
                             foreach (int curItem in _test32max)
                             {
                                 using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next);
+                                    good &= _testRNG(curItem, rGenSec, RandomCrypt.Next);
                             }
                             //uint
                             foreach (Tuple<uint, uint> curPair in _testU32minmax)
                             {
                                 using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.NextUInt32);
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomCrypt.NextUInt32);
                             }
                             foreach (uint curItem in _testU32max)
                             {
                                 using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                    good &= _testRNG(curItem, rGenSec, RandomGen.NextUInt32);
+                                    good &= _testRNG(curItem, rGenSec, RandomCrypt.NextUInt32);
                             }
                             //long
                             foreach (Tuple<long, long> curPair in _test64minmax)
                             {
                                 using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next64);
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomCrypt.Next64);
                             }
                             foreach (long curItem in _test64max)
                             {
                                 using (RandomNumberGenerator rGenSec = new RandomSequence.RNGSequence())
-                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next64);
+                                    good &= _testRNG(curItem, rGenSec, RandomCrypt.Next64);
                             }
                             //RandomNumberGenerator single
                             using (RandomNumberGenerator rGenSec = RandomNumberGenerator.Create())
                             {
                                 //int
                                 foreach (Tuple<int, int> curPair in _test32minmax)
-                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next);
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomCrypt.Next);
                                 foreach (int curItem in _test32max)
-                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next);
+                                    good &= _testRNG(curItem, rGenSec, RandomCrypt.Next);
                                 //uint
                                 foreach (Tuple<uint, uint> curPair in _testU32minmax)
-                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.NextUInt32);
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomCrypt.NextUInt32);
                                 foreach (uint curItem in _testU32max)
-                                    good &= _testRNG(curItem, rGenSec, RandomGen.NextUInt32);
+                                    good &= _testRNG(curItem, rGenSec, RandomCrypt.NextUInt32);
                                 //long
                                 foreach (Tuple<long, long> curPair in _test64minmax)
-                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomGen.Next64);
+                                    good &= _testRNG(curPair.Item1, curPair.Item2, rGenSec, RandomCrypt.Next64);
                                 foreach (long curItem in _test64max)
-                                    good &= _testRNG(curItem, rGenSec, RandomGen.Next64);
+                                    good &= _testRNG(curItem, rGenSec, RandomCrypt.Next64);
                             }
 #endif
                             if (good) Console.WriteLine("All tests passed.");
