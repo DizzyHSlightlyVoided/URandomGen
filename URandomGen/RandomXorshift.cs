@@ -95,6 +95,26 @@ namespace URandomGen
         }
 
         /// <summary>
+        /// Creates a new instance using a range of elements within the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <param name="offset">The index in <paramref name="seeds"/> of the range of elements to use.</param>
+        /// <param name="count">The number of elements to use in <paramref name="seeds"/>.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> or <paramref name="count"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="count"/> plus <paramref name="offset"/> is greater than the number of elements in <paramref name="seeds"/>.
+        /// </exception>
+        public RandomXorshift(uint[] seeds, int offset, int count)
+            : this(GetArraySegment(seeds, offset, count, "seeds"))
+        {
+        }
+
+        /// <summary>
         /// Creates a new instance using the specified seed.
         /// </summary>
         /// <param name="seed">A 32-bit seed used to initialize the random number generator.</param>
@@ -128,11 +148,84 @@ namespace URandomGen
         }
 
         /// <summary>
+        /// Creates a new instance using a range of elements within the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <param name="offset">The index in <paramref name="seeds"/> of the range of elements to use.</param>
+        /// <param name="count">The number of elements to use in <paramref name="seeds"/>.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> or <paramref name="count"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="count"/> plus <paramref name="offset"/> is greater than the number of elements in <paramref name="seeds"/>.
+        /// </exception>
+        public RandomXorshift(int[] seeds, int offset, int count)
+            : this(GetArraySegment(seeds, offset, count, "seeds"))
+        {
+        }
+
+        /// <summary>
         /// Creates a new instance using the specified seed.
         /// </summary>
         /// <param name="seed">A 32-bit seed used to initialize the random number generator.</param>
         public RandomXorshift(int seed)
             : this(unchecked((uint)seed))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified collection of byte values.
+        /// </summary>
+        /// <param name="seeds">A collection containing bytes to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        /// <remarks>
+        /// Each segment of 4 bytes is converted to an unsigned 32-bit integer in little endian order; padding is added if necessary.
+        /// </remarks>
+        public RandomXorshift(IEnumerable<byte> seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using the specified collection of byte values.
+        /// </summary>
+        /// <param name="seeds">A collection containing bytes to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        /// <remarks>
+        /// Each segment of 4 bytes is converted to an unsigned 32-bit integer in little endian order; padding is added if necessary.
+        /// </remarks>
+        public RandomXorshift(params byte[] seeds)
+            : this(ToUIntIterator(seeds))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance using a range of elements within the specified collection of seeds.
+        /// </summary>
+        /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
+        /// <param name="offset">The index in <paramref name="seeds"/> of the range of elements to use.</param>
+        /// <param name="count">The number of elements to use in <paramref name="seeds"/>.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="seeds"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> or <paramref name="count"/> is less than 0.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="count"/> plus <paramref name="offset"/> is greater than the number of elements in <paramref name="seeds"/>.
+        /// </exception>
+        /// <remarks>
+        /// Each segment of 4 bytes is converted to an unsigned 32-bit integer in little endian order; padding is added if necessary.
+        /// </remarks>
+        public RandomXorshift(byte[] seeds, int offset, int count)
+            : this(GetArraySegment(seeds, offset, count, "seeds"))
         {
         }
 

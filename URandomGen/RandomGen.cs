@@ -132,6 +132,53 @@ namespace URandomGen
             return buffer;
         }
 #endif
+        internal static IEnumerable<T> GetArraySegment<T>(T[] array, int offset, int count, string paramName)
+        {
+            if (array == null) throw new ArgumentNullException(paramName);
+
+            var segment = new ArraySegment<T>(array, offset, count);
+#if ARRAYSEG
+            return segment;
+#else
+            int end = count + offset;
+            for (int i = offset; i < end; i++)
+                yield return array[i];
+#endif
+        }
+
+        internal static IEnumerable<uint> ToUIntIterator(IEnumerable<byte> seeds)
+        {
+            if (seeds == null) throw new ArgumentNullException("seeds");
+
+            using (IEnumerator<byte> enumerator = seeds.GetEnumerator())
+            {
+                uint value = 0;
+                while (enumerator.MoveNext())
+                {
+                    value |= enumerator.Current;
+                    if (!enumerator.MoveNext())
+                    {
+                        yield return value;
+                        break;
+                    }
+                    value |= (uint)enumerator.Current << 8;
+                    if (!enumerator.MoveNext())
+                    {
+                        yield return value;
+                        break;
+                    }
+                    value |= (uint)enumerator.Current << 16;
+                    if (!enumerator.MoveNext())
+                    {
+                        yield return value;
+                        break;
+                    }
+                    value |= (uint)enumerator.Current << 24;
+                    yield return value;
+                    value = 0;
+                }
+            }
+        }
 
         internal static IEnumerable<uint> ToUIntIterator(IEnumerable<int> seeds)
         {
