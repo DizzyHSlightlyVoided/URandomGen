@@ -86,6 +86,7 @@ namespace URandomGen
                 _gen = value;
             }
         }
+
         internal static uint SampleGen32(RandomNumberGenerator generator)
         {
             byte[] data = new byte[sizeof(uint)];
@@ -227,6 +228,7 @@ namespace URandomGen
         {
             return Next(generator, int.MaxValue);
         }
+
         /// <summary>
         /// Returns a random integer within a specified range.
         /// </summary>
