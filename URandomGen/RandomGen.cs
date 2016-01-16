@@ -95,8 +95,7 @@ namespace URandomGen
             }
             return true;
 #else
-            using (IEnumerator<uint> enumerator = ArrayOffset(seeds, curIndex).Take(3).Where(i => i != 0).GetEnumerator())
-                return !enumerator.MoveNext();
+            return ArrayOffset(seeds, curIndex).Take(3).Any(i => i != 0);
 #endif
         }
 
