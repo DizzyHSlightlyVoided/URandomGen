@@ -52,7 +52,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         public RandomXorshift(IEnumerable<uint> seeds)
         {
@@ -87,7 +87,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         public RandomXorshift(params uint[] seeds)
             : this((IEnumerable<uint>)seeds)
@@ -101,7 +101,7 @@ namespace URandomGen
         /// <param name="offset">The index in <paramref name="seeds"/> of the range of elements to use.</param>
         /// <param name="count">The number of elements to use in <paramref name="seeds"/>.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="offset"/> or <paramref name="count"/> is less than 0.
@@ -128,7 +128,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         public RandomXorshift(IEnumerable<int> seeds)
             : this(ToUIntIterator(seeds))
@@ -140,7 +140,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="seeds">A collection of seeds used to initialize the random number generator.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         public RandomXorshift(params int[] seeds)
             : this(ToUIntIterator(seeds))
@@ -154,7 +154,7 @@ namespace URandomGen
         /// <param name="offset">The index in <paramref name="seeds"/> of the range of elements to use.</param>
         /// <param name="count">The number of elements to use in <paramref name="seeds"/>.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="offset"/> or <paramref name="count"/> is less than 0.
@@ -181,7 +181,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="seeds">A collection containing bytes to add.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         /// <remarks>
         /// Each segment of 4 bytes is converted to an unsigned 32-bit integer in little endian order; padding is added if necessary.
@@ -196,7 +196,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="seeds">A collection containing bytes to add.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         /// <remarks>
         /// Each segment of 4 bytes is converted to an unsigned 32-bit integer in little endian order; padding is added if necessary.
@@ -213,7 +213,7 @@ namespace URandomGen
         /// <param name="offset">The index in <paramref name="seeds"/> of the range of elements to use.</param>
         /// <param name="count">The number of elements to use in <paramref name="seeds"/>.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="seeds"/> is <c>null</c>.
+        /// <paramref name="seeds"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="offset"/> or <paramref name="count"/> is less than 0.

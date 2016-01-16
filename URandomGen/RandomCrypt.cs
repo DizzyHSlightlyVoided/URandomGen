@@ -56,7 +56,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="generator">The <see cref="RandomNumberGenerator"/> to use.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         public RandomCrypt(RandomNumberGenerator generator)
         {
@@ -72,7 +72,7 @@ namespace URandomGen
         /// Gets the <see cref="RandomNumberGenerator"/> used by the current instance.
         /// </summary>
         /// <exception cref="ArgumentNullException">
-        /// In a set operation, the specified value is <c>null</c>.
+        /// In a set operation, the specified value is <see langword="null"/>.
         /// </exception>
         public RandomNumberGenerator Generator
         {
@@ -139,7 +139,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="buffer">A byte array to fill with random numbers.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="buffer"/> is <c>null</c>.
+        /// <paramref name="buffer"/> is <see langword="null"/>.
         /// </exception>
         public override void NextBytes(byte[] buffer)
         {
@@ -155,7 +155,7 @@ namespace URandomGen
         /// </summary>
         /// <param name="buffer">A byte array to fill with random numbers.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="buffer"/> is <c>null</c>.
+        /// <paramref name="buffer"/> is <see langword="null"/>.
         /// </exception>
         public override void NextNonZeroBytes(byte[] buffer)
         {
@@ -174,7 +174,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>A signed 32-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
@@ -199,7 +199,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>A signed 32-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
@@ -222,7 +222,7 @@ namespace URandomGen
         /// <param name="generator">The random number generator to use.</param>
         /// <returns>A signed 32-bit integer which is greater than or equal to 0 and less than <see cref="Int32.MaxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         public static int Next(RandomNumberGenerator generator)
         {
@@ -237,7 +237,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
@@ -262,7 +262,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
@@ -286,7 +286,7 @@ namespace URandomGen
         /// <param name="generator">The random number generator to use.</param>
         /// <returns>An unsigned 32-bit integer which is greater than or equal to 0 and less than <see cref="UInt32.MaxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         public static uint NextUInt32(RandomNumberGenerator generator)
         {
@@ -334,7 +334,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>A signed 64-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
@@ -358,7 +358,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
@@ -381,7 +381,7 @@ namespace URandomGen
         /// <param name="generator">The random number generator to use.</param>
         /// <returns>A signed 64-bit integer which is greater than or equal to 0 and less than <see cref="Int64.MaxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         public static long Next64(RandomNumberGenerator generator)
         {
@@ -396,7 +396,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>An unsigned 64-bit integer which is greater than or equal to <paramref name="minValue"/> and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than <paramref name="minValue"/>.
@@ -420,7 +420,7 @@ namespace URandomGen
         /// <param name="maxValue">The exclusive upper bound of the random value.</param>
         /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <paramref name="maxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="maxValue"/> is less than 0.
@@ -443,7 +443,7 @@ namespace URandomGen
         /// <param name="generator">The random number generator to use.</param>
         /// <returns>An unsigned 64-bit integer which is greater than or equal to 0 and less than <see cref="UInt64.MaxValue"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> is <c>null</c>.
+        /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         public static ulong NextUInt64(RandomNumberGenerator generator)
         {
@@ -458,7 +458,7 @@ namespace URandomGen
         /// <param name="collection">The collection whose elements will be shuffled.</param>
         /// <returns>A list containing the shuffled elements in <paramref name="collection"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <see langword="null"/>.
         /// </exception>
         public static T[] Shuffle<T>(RandomNumberGenerator generator, IEnumerable<T> collection)
         {
@@ -473,7 +473,7 @@ namespace URandomGen
         /// <param name="generator">The random number generator to use.</param>
         /// <param name="array">The array whose elements will be shuffled.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> or <paramref name="array"/> is <c>null</c>.
+        /// <paramref name="generator"/> or <paramref name="array"/> is <see langword="null"/>.
         /// </exception>
         public static void ShuffleArray<T>(RandomNumberGenerator generator, T[] array)
         {
@@ -493,7 +493,7 @@ namespace URandomGen
         /// <param name="collection">The collection from which to get a random element.</param>
         /// <returns>A random element from <paramref name="collection"/>.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="collection"/> is empty.
@@ -513,7 +513,7 @@ namespace URandomGen
         /// <param name="length">The number of elements to copy.</param>
         /// <returns>An array containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> is less than 0.
@@ -538,7 +538,7 @@ namespace URandomGen
         /// <param name="length">The number of characters to copy.</param>
         /// <returns>A string containing elements copied from <paramref name="collection"/>. Multiple instances of the same element may be copied.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="generator"/> or <paramref name="collection"/> is <c>null</c>.
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> is less than 0.
