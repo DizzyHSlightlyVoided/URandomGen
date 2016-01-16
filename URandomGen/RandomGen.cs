@@ -783,6 +783,7 @@ namespace URandomGen
 
 #if NOFUNC
         internal delegate TOut Func<T1, TOut>(T1 arg1);
+        internal delegate TOut Func<TOut>();
 #endif
         internal static void _shuffleArray<T>(Func<int, int> nextInt32, T[] array, int startIndex, int length)
         {
@@ -910,7 +911,7 @@ namespace URandomGen
         internal static T _randomElement<T>(Func<int, int> nextInt32, IEnumerable<T> collection)
         {
             if (collection == null) throw new ArgumentNullException("collection");
-            using (IEnumerator<T> enumer = collection.GetEnumerator())
+            using (var enumer = collection.GetEnumerator())
                 if (!enumer.MoveNext()) throw new ArgumentException("The collection is empty.", "collection");
 #if !NOCONTRACT
             Contract.EndContractBlock();
@@ -990,6 +991,135 @@ namespace URandomGen
         public T RandomElement<T>(IEnumerable<T> collection)
         {
             return RandomElement(this, collection);
+        }
+
+        internal static T _randomElement<T>(Func<double> nextDouble, IEnumerable<PriorityNode<T>> collection)
+        {
+            if (collection == null) throw new ArgumentNullException("collection");
+            PriorityNode<T>[] array =
+#if NOLINQ
+                ToArray(collection);
+#else
+                collection.ToArray();
+#endif
+            int result = _randomIndex(nextDouble, array, "collection");
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
+            return array[result].Value;
+        }
+
+        internal static int _randomIndex<T>(Func<double> nextDouble, IList<PriorityNode<T>> list, string paramName)
+        {
+            if (list == null) throw new ArgumentNullException("list");
+
+            double total = 0;
+            List<PriorityNode<int>> dexList = new List<PriorityNode<int>>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var curNode = list[i];
+
+                if (curNode.Priority <= 0) continue;
+                total += curNode.Priority;
+                dexList.Add(new PriorityNode<int>(i, total));
+            }
+            if (dexList.Count == 0)
+                throw new ArgumentException("The collection has no nodes with priorities greater than zero.", paramName);
+#if !NOCONTRACT
+            Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() < list.Count);
+            Contract.EndContractBlock();
+#endif
+
+            double result = nextDouble() * total;
+
+            int dex = 0;
+
+            while (dex < dexList.Count && dexList[dex].Priority < result)
+                dex++;
+            return dexList[dex].Value;
+        }
+
+        /// <summary>
+        /// Returns a random value from the specified collection of <see cref="PriorityNode{T}"/> values.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to return.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="collection">A collection containing <see cref="PriorityNode{T}"/> objects. Elements with a higher
+        /// <see cref="PriorityNode{T}.Priority"/> value will have a higher probability of occurring. Elements with a
+        /// <see cref="PriorityNode{T}.Priority"/> value less than or equal to 0 will be ignored.</param>
+        /// <returns>The value of a random element in <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="collection"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> does not contain any elements with priorities greater than 0.
+        /// </exception>
+        public static T RandomElement<T>(Random generator, IEnumerable<PriorityNode<T>> collection)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+
+            return _randomElement(generator.NextDouble, collection);
+        }
+
+        /// <summary>
+        /// Returns a random value from the specified collection of <see cref="PriorityNode{T}"/> values.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to return.</typeparam>
+        /// <param name="collection">A collection containing <see cref="PriorityNode{T}"/> objects. Elements with a higher
+        /// <see cref="PriorityNode{T}.Priority"/> value will have a higher probability of occurring. Elements with a
+        /// <see cref="PriorityNode{T}.Priority"/> value less than or equal to 0 will be ignored.</param>
+        /// <returns>The value of a random element in <paramref name="collection"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="collection"/> does not contain any elements with priorities greater than 0.
+        /// </exception>
+        public T RandomElement<T>(IEnumerable<PriorityNode<T>> collection)
+        {
+            return RandomElement(this, collection);
+        }
+
+        /// <summary>
+        /// Returns a random index from the specified collection of <see cref="PriorityNode{T}"/> values.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to return.</typeparam>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="list">A list containing <see cref="PriorityNode{T}"/> objects. Elements with a higher
+        /// <see cref="PriorityNode{T}.Priority"/> value will have a higher probability of occurring. Elements with a
+        /// <see cref="PriorityNode{T}.Priority"/> value less than or equal to 0 will be ignored.</param>
+        /// <returns>The index of a random element in <paramref name="list"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> or <paramref name="list"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="list"/> does not contain any elements with priorities greater than 0.
+        /// </exception>
+        public static int RandomIndex<T>(Random generator, IList<PriorityNode<T>> list)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+
+            return _randomIndex(generator.NextDouble, list, "list");
+        }
+
+        /// <summary>
+        /// Returns a random index from the specified collection of <see cref="PriorityNode{T}"/> values.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to return.</typeparam>
+        /// <param name="list">A list containing <see cref="PriorityNode{T}"/> objects. Elements with a higher
+        /// <see cref="PriorityNode{T}.Priority"/> value will have a higher probability of occurring. Elements with a
+        /// <see cref="PriorityNode{T}.Priority"/> value less than or equal to 0 will be ignored.</param>
+        /// <returns>The index of a random element in <paramref name="list"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="list"/> does not contain any elements with priorities greater than 0.
+        /// </exception>
+        public int RandomIndex<T>(IList<PriorityNode<T>> list)
+        {
+            return RandomIndex(this, list);
         }
 
         internal static T[] _randomElements<T>(Func<int, int> nextInt32, IEnumerable<T> collection, int length)

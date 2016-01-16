@@ -61,6 +61,7 @@ namespace URandomGen.Tests
                 Console.WriteLine("5. RandomCrypt with RandomNumberGenerator.Create()");
 #endif
                 Console.WriteLine("R. System.Random, for comparison");
+                Console.WriteLine("W. Test WeightedList");
                 Console.WriteLine("G. Test RandomGen methods");
                 Console.WriteLine("X. Exit");
 
@@ -92,6 +93,32 @@ namespace URandomGen.Tests
 #endif
                     case ConsoleKey.R:
                         genGenerator = () => new Random();
+                        break;
+                    case ConsoleKey.W:
+                        {
+                            WeightedList<int> fibList = new WeightedList<int>();
+
+                            int[] counts = new int[10];
+
+                            for (int i = 0; i < counts.Length; i++)
+                            {
+                                double weight = i + 11;
+                                Console.WriteLine("Adding {0}: {1}", i, weight);
+                                fibList.Add(i, weight);
+                            }
+
+                            Random rng = new Random();
+
+                            for (int i = 0; i < _maxVals; i++)
+                                counts[fibList.GetRandomIndex(rng)]++;
+
+                            Console.WriteLine();
+
+                            for (int i = 0; i < counts.Length; i++)
+                                Console.WriteLine("Occurrences of {0}: {1}", i, counts[i]);
+
+                            Console.WriteLine();
+                        }
                         break;
                     case ConsoleKey.G:
                         {

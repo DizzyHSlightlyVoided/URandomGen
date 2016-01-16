@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Net20", "URandomGen\URandomGen.Net20.csproj", "{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URandomGen.Tests.Net20", "URandomGen.Tests\URandomGen.Tests.Net20.csproj", "{C07028D3-9DB9-49D8-8A55-3B182044D876}"
