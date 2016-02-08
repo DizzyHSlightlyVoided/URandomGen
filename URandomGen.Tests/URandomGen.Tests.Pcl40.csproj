@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DF68014E-F2E3-43F8-8997-CFD43E00ACBF}</ProjectGuid>
+    <ProjectGuid>{37C0CF63-38CF-4CD7-8833-801EBDDF0E72}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>URandomGen.Tests</RootNamespace>
