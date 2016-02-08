@@ -17,7 +17,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Net 2.0\Debug\</OutputPath>
     <IntermediateOutputPath>bin\Net 2.0\Debug\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;NOCONTRACT;NOBIGINT;NOLINQ;NOFUNC</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;NOCONTRACT;NOBIGINT;NOLINQ;NOFUNC;NOCOMPARECREATE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Net 2.0\Debug\URandomGen.XML</DocumentationFile>
@@ -27,7 +27,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Net 2.0\Release\</OutputPath>
     <IntermediateOutputPath>bin\Net 2.0\Release\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_2_0;NOCONTRACT;NOBIGINT;NOLINQ;NOFUNC</DefineConstants>
+    <DefineConstants>TRACE;NET_2_0;NOCONTRACT;NOBIGINT;NOLINQ;NOFUNC;NOCOMPARECREATE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Net 2.0\Release\URandomGen.XML</DocumentationFile>

@@ -34,9 +34,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+#if !NOCONTRACT
+using System.Diagnostics.Contracts;
+#endif
 #if NOFIND
 using System.Linq;
-using System.Diagnostics.Contracts;
 #endif
 
 namespace URandomGen
@@ -1304,5 +1306,153 @@ namespace URandomGen
         {
             return !t1.Equals(t2);
         }
+
+        #region Get Comparer
+        /// <summary>
+        /// Returns a <see cref="Comparer{T}"/> implementation which compares only the <see cref="Value"/> of priority nodes.
+        /// </summary>
+        /// <param name="comparer">The existing comparer to use, or <see langword="null"/> to use the default comparer.</param>
+        /// <returns>A <see cref="PriorityNode{T}"/> comparer which compares only the values.</returns>
+        public Comparer<PriorityNode<T>> GetComparer(IComparer<T> comparer)
+        {
+            return new ValueComparer(comparer);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="Comparer{T}"/> implementation which compares only the <see cref="Value"/> of priority nodes,
+        /// using the specified <see cref="Comparison{T}"/>.
+        /// </summary>
+        /// <param name="comparison">The <see cref="Comparison{T}"/> to use.</param>
+        /// <returns>A <see cref="PriorityNode{T}"/> comparer which compares only the values.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="comparison"/> is <see langword="null"/>.
+        /// </exception>
+        public Comparer<PriorityNode<T>> GetComparer(Comparison<T> comparison)
+        {
+#if NOCOMPARECREATE
+            if (comparison == null)
+                throw new ArgumentNullException("comparison");
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
+            return new ValueComparer(comparison);
+#else
+            return new ValueComparer(Comparer<T>.Create(comparison));
+#endif
+        }
+
+        private class ValueComparer : Comparer<PriorityNode<T>>, IEquatable<ValueComparer>
+        {
+            public ValueComparer(IComparer<T> comparer)
+            {
+                if (comparer == null)
+                    _comparer = Comparer<T>.Default;
+                else
+                    _comparer = comparer;
+            }
+
+#if NOCOMPARECREATE
+            public ValueComparer(Comparison<T> comparison)
+            {
+                _comparison = comparison;
+            }
+
+            private Comparison<T> _comparison;
+#endif
+            private IComparer<T> _comparer;
+
+            public override int Compare(PriorityNode<T> x, PriorityNode<T> y)
+            {
+#if NOCOMPARECREATE
+                if (_comparison != null)
+                    return _comparison(x.Value, y.Value);
+#endif
+                return _comparer.Compare(x.Value, y.Value);
+            }
+
+            public bool Equals(ValueComparer other)
+            {
+#if NOCOMPARECREATE
+                if (_comparer != null)
+                    return _comparer == other._comparer;
+#endif
+                return _comparer.Equals(other._comparer);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as ValueComparer);
+            }
+
+            public override int GetHashCode()
+            {
+                int nameHash = StringComparer.Ordinal.GetHashCode("ValueComparer");
+#if NOCOMPARECREATE
+                if (_comparison != null)
+                    return _comparison.GetHashCode() + nameHash;
+#endif
+                return nameHash + _comparer.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Returns an <see cref="EqualityComparer{T}"/> which compares only the <see cref="Value"/> of priority nodes.
+        /// </summary>
+        /// <param name="comparer">The existing equality comparer to use, or <see langword="null"/> to use the default equality comparer.</param>
+        /// <returns>A <see cref="PriorityNode{T}"/> equality comparer which compares only the values.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="comparer"/> is <see langword="null"/>.
+        /// </exception>
+        public EqualityComparer<PriorityNode<T>> GetEqualityComparer(IEqualityComparer<T> comparer)
+        {
+            return new ValueEqualityComparer(comparer);
+        }
+
+        private class ValueEqualityComparer : EqualityComparer<PriorityNode<T>>, IEquatable<ValueEqualityComparer>
+        {
+            public ValueEqualityComparer(IEqualityComparer<T> comparer)
+            {
+                if (comparer == null)
+                    _comparer = EqualityComparer<T>.Default;
+                else
+                    _comparer = comparer;
+            }
+
+            private IEqualityComparer<T> _comparer;
+
+            public override bool Equals(PriorityNode<T> x, PriorityNode<T> y)
+            {
+                return _comparer.Equals(x.Value, y.Value);
+            }
+
+            public override int GetHashCode(PriorityNode<T> obj)
+            {
+                try
+                {
+                    return _comparer.GetHashCode(obj.Value);
+                }
+                catch (ArgumentNullException)
+                {
+                    return 0;
+                }
+            }
+
+            public bool Equals(ValueEqualityComparer other)
+            {
+                return _comparer.Equals(other._comparer);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as ValueEqualityComparer);
+            }
+
+            public override int GetHashCode()
+            {
+                int nameHash = StringComparer.Ordinal.GetHashCode("ValueEqualityComparer");
+                return nameHash + _comparer.GetHashCode();
+            }
+        }
+        #endregion
     }
 }
