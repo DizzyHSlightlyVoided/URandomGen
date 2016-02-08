@@ -468,6 +468,359 @@ namespace URandomGen
             return _list[GetRandomIndex(generator)].Value;
         }
 
+        #region Find ...
+        private static Predicate<PriorityNode<T>> _predicator(Predicate<T> match)
+        {
+            if (match == null) return null;
+
+            return i => match(i.Value);
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the first occurrence of the node in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, the default value
+        /// for type <see cref="PriorityNode{T}"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public PriorityNode<T> Find(Predicate<PriorityNode<T>> match)
+        {
+            return _list.Find(match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the first node with a matching value in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <typeparamref name="T"/> defining the element to search for.</param>
+        /// <returns>The first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, the default value
+        /// for type <see cref="PriorityNode{T}"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public PriorityNode<T> Find(Predicate<T> match)
+        {
+            return _list.Find(_predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the last occurrence of the node in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, the default value
+        /// for type <see cref="PriorityNode{T}"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public PriorityNode<T> FindLast(Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindLast(match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the last node with a matching value in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <typeparamref name="T"/> defining the element to search for.</param>
+        /// <returns>The last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, the default value
+        /// for type <see cref="PriorityNode{T}"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public PriorityNode<T> FindLast(Predicate<T> match)
+        {
+            return _list.FindLast(_predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the first occurrence of the node in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public int FindIndex(Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindIndex(match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the first occurrence of the node in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public int FindIndex(Predicate<T> match)
+        {
+            return _list.FindIndex(_predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the first occurrence of the node in the list, starting with the specified index.
+        /// </summary>
+        /// <param name="startIndex">The zero-based index of the first element to search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public int FindIndex(int startIndex, Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindIndex(startIndex, match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the first occurrence of the node in the list, starting with the specified index.
+        /// </summary>
+        /// <param name="startIndex">The zero-based index of the first element to search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public int FindIndex(int startIndex, Predicate<T> match)
+        {
+            return _list.FindIndex(startIndex, _predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the first occurrence of the node in the specified range of elements in the list.
+        /// </summary>
+        /// <param name="startIndex">The zero-based index of the first element to search.</param>
+        /// <param name="count">The number of elements to search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> and <paramref name="count"/> do not specify a valid range of elements in the current list.
+        /// </exception>
+        public int FindIndex(int startIndex, int count, Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindIndex(startIndex, count, match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the first occurrence of the node in the list, starting with the specified index.
+        /// </summary>
+        /// <param name="startIndex">The zero-based index of the first element to search.</param>
+        /// <param name="count">The number of elements to search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the first occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public int FindIndex(int startIndex, int count, Predicate<T> match)
+        {
+            return _list.FindIndex(startIndex, count, _predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the last occurrence of the node in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public int FindLastIndex(Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindLastIndex(match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the last occurrence of the node in the entire list.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public int FindLastIndex(Predicate<T> match)
+        {
+            return _list.FindLastIndex(_predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the last occurrence of the node in the list, starting backward from with the specified index.
+        /// </summary>
+        /// <param name="startIndex">The zero-based starting index of the backward search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public int FindLastIndex(int startIndex, Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindLastIndex(startIndex, match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the last occurrence of the node in the list, starting backward from with the specified index.
+        /// </summary>
+        /// <param name="startIndex">The zero-based starting index of the backward search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public int FindLastIndex(int startIndex, Predicate<T> match)
+        {
+            return _list.FindLastIndex(startIndex, _predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for a node matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the last occurrence of the node in the specified range of elements in the list.
+        /// </summary>
+        /// <param name="startIndex">The zero-based starting index of the backward search.</param>
+        /// <param name="count">The number of elements to search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> and <paramref name="count"/> do not specify a valid range of elements in the current list.
+        /// </exception>
+        public int FindLastIndex(int startIndex, int count, Predicate<PriorityNode<T>> match)
+        {
+            return _list.FindLastIndex(startIndex, count, match);
+        }
+
+        /// <summary>
+        /// Searches for a value matching the conditions defined by the specified predicate,
+        /// and returns the zero-based index of the last occurrence of the node in the list, starting backward from with the specified index.
+        /// </summary>
+        /// <param name="startIndex">The zero-based starting index of the backward search.</param>
+        /// <param name="count">The number of elements to search.</param>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the element to search for.</param>
+        /// <returns>The zero-based index of the last occurrence in the list of a node matching <paramref name="match"/>, if found; otherwise, -1.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="startIndex"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public int FindLastIndex(int startIndex, int count, Predicate<T> match)
+        {
+            return _list.FindLastIndex(startIndex, count, _predicator(match));
+        }
+
+        /// <summary>
+        /// Searches for all nodes matching the specified predicate,
+        /// and returns a list containing all matching nodes.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the elements to search for.</param>
+        /// <returns>A list containing any and all nodes matched by <paramref name="match"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public WeightedList<T> FindAll(Predicate<PriorityNode<T>> match)
+        {
+            return new WeightedList<T>() { _list = _list.FindAll(match) };
+        }
+
+        /// <summary>
+        /// Searches for all nodes matching the specified predicate,
+        /// and returns a list containing all matching nodes.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <typeparamref name="T"/> defining the elements to search for.</param>
+        /// <returns>A list containing any and all nodes matched by <paramref name="match"/>.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public WeightedList<T> FindAll(Predicate<T> match)
+        {
+            return new WeightedList<T>() { _list = _list.FindAll(_predicator(match)) };
+        }
+
+        /// <summary>
+        /// Determines if the list contains any nodes matching the specified predicate.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the elements to search for.</param>
+        /// <returns><see langword="true"/> if at least one node matches <paramref name="match"/>; <see langword="false"/> otherwise.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public bool Exists(Predicate<PriorityNode<T>> match)
+        {
+            return _list.Exists(match);
+        }
+
+        /// <summary>
+        /// Determines if the list contains any values matching the specified predicate.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <typeparamref name="T"/> defining the elements to search for.</param>
+        /// <returns><see langword="true"/> if at least one value matches <paramref name="match"/>; <see langword="false"/> otherwise.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public bool Exists(Predicate<T> match)
+        {
+            return _list.Exists(_predicator(match));
+        }
+
+        /// <summary>
+        /// Determines if every node in the list matches the specified predicate.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <see cref="PriorityNode{T}"/> defining the elements to search for.</param>
+        /// <returns><see langword="true"/> if every node in the list matches <paramref name="match"/>; <see langword="false"/> otherwise.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public bool TrueForAll(Predicate<PriorityNode<T>> match)
+        {
+            return _list.TrueForAll(match);
+        }
+
+        /// <summary>
+        /// Determines if every value in the list matches the specified predicate.
+        /// </summary>
+        /// <param name="match">The <see cref="Predicate{T}"/> of type <typeparamref name="T"/> defining the elements to search for.</param>
+        /// <returns><see langword="true"/> if every value in the list matches <paramref name="match"/>; <see langword="false"/> otherwise.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="match"/> is <see langword="null"/>.
+        /// </exception>
+        public bool TrueForAll(Predicate<T> match)
+        {
+            return _list.TrueForAll(_predicator(match));
+        }
+        #endregion
+
         /// <summary>
         /// Returns an enumerator which iterates through the list.
         /// </summary>
