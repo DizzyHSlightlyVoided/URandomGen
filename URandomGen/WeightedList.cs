@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -249,6 +250,34 @@ namespace URandomGen
         }
 
         /// <summary>
+        /// Gets the priority of the value at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the value to get.</param>
+        /// <returns>The priority of the value at <paramref name="index"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public double GetPriorityAt(int index)
+        {
+            return this[index].Priority;
+        }
+
+        /// <summary>
+        /// Sets the priority of the value at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the value to set.</param>
+        /// <param name="priority">The priority of the value to set.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public void SetPriorityAt(int index, double priority)
+        {
+            var node = this[index];
+            node.Priority = priority;
+            this[index] = node;
+        }
+
+        /// <summary>
         /// Determines if the specified node exists in the list.
         /// </summary>
         /// <param name="node">The node to search for in the list.</param>
@@ -272,7 +301,7 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// Determines if the specified node exists in the list.
+        /// Determines if the specified value exists in the list.
         /// </summary>
         /// <param name="value">The value to search for in the list.</param>
         /// <returns><see langword="true"/> if a node with the same value as <paramref name="value"/>
@@ -316,7 +345,7 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// Returns the index of the specified node.
+        /// Returns the index of the specified value.
         /// </summary>
         /// <param name="value">The value to search for in the list.</param>
         /// <returns>The index of the first occurrence of a node with the same value as <paramref name="value"/>
@@ -386,6 +415,15 @@ namespace URandomGen
         public PriorityNode<T>[] ToArray()
         {
             return _list.ToArray();
+        }
+
+        /// <summary>
+        /// Returns a read-only wrapper for the current list.
+        /// </summary>
+        /// <returns>A read-only wrapper for the current list.</returns>
+        public ReadOnly AsReadOnly()
+        {
+            return new ReadOnly(this);
         }
 
         /// <summary>
@@ -526,6 +564,119 @@ namespace URandomGen
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public PriorityNode<T>[] Items { get { return _list.ToArray(); } }
+        }
+
+        /// <summary>
+        /// A read-only wrapper for a <see cref="WeightedList{T}"/>.
+        /// </summary>
+        public class ReadOnly : ReadOnlyCollection<PriorityNode<T>>
+        {
+            private readonly WeightedList<T> _list;
+            /// <summary>
+            /// Creates a new instance using the specified list.
+            /// </summary>
+            /// <param name="list">The list to wrap.</param>
+            /// <exception cref="ArgumentNullException">
+            /// <paramref name="list"/> is <see langword="null"/>.
+            /// </exception>
+            public ReadOnly(WeightedList<T> list)
+                : base(list)
+            {
+                _list = list;
+            }
+
+            /// <summary>
+            /// Gets the priority of the value at the specified index.
+            /// </summary>
+            /// <param name="index">The index of the value to get.</param>
+            /// <returns>The priority of the value at <paramref name="index"/>.</returns>
+            /// <exception cref="ArgumentOutOfRangeException">
+            /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+            /// </exception>
+            public double GetPriorityAt(int index)
+            {
+                return _list._list[index].Priority;
+            }
+
+            /// <summary>
+            /// Determines if the specified value exists in the list with the specified priority.
+            /// </summary>
+            /// <param name="value">The value to search for in the list.</param>
+            /// <param name="priority">The priority of the node to search for in the list.</param>
+            /// <returns><see langword="true"/> if a node with the same value and priority as <paramref name="value"/> and <paramref name="priority"/>
+            /// was found; <see langword="false"/> otherwise.</returns>
+            public bool Contains(T value, double priority)
+            {
+                return _list.Contains(value, priority);
+            }
+
+            /// <summary>
+            /// Determines if the specified value exists in the list.
+            /// </summary>
+            /// <param name="value">The value to search for in the list.</param>
+            /// <returns><see langword="true"/> if a node with the same value as <paramref name="value"/>
+            /// was found; <see langword="false"/> otherwise.</returns>
+            public bool Contains(T value)
+            {
+                return _list.Contains(value);
+            }
+
+            /// <summary>
+            /// Returns the index of the specified node.
+            /// </summary>
+            /// <param name="value">The value to search for in the list.</param>
+            /// <param name="priority">The priority of the value to search for in the list.</param>
+            /// <returns>The index of the first occurrence of a node with the same value and weight as <paramref name="value"/> and <paramref name="priority"/>
+            /// within the list, if found; otherwise, -1.</returns>
+            public int IndexOf(T value, double priority)
+            {
+                return _list.IndexOf(value, priority);
+            }
+
+            /// <summary>
+            /// Returns the index of the specified value.
+            /// </summary>
+            /// <param name="value">The value to search for in the list.</param>
+            /// <returns>The index of the first occurrence of a node with the same value as <paramref name="value"/>
+            /// within the list, if found; otherwise, -1.</returns>
+            public int IndexOf(T value)
+            {
+                return _list.IndexOf(value);
+            }
+
+            /// <summary>
+            /// Returns a random index from the current instance. Elements with a higher <see cref="PriorityNode{T}.Priority"/> value
+            /// will have a higher probability; elements with a <see cref="PriorityNode{T}.Priority"/> less than or equal to 0 will be ignored.
+            /// </summary>
+            /// <param name="generator">The random number generator to use.</param>
+            /// <returns>The index of a random element in the current list.</returns>
+            /// <exception cref="ArgumentNullException">
+            /// <paramref name="generator"/> is <see langword="null"/>.
+            /// </exception>
+            /// <exception cref="InvalidOperationException">
+            /// The current list does not contain any elements with a <see cref="PriorityNode{T}.Priority"/> value greater than 0.
+            /// </exception>
+            public int GetRandomIndex(Random generator)
+            {
+                return _list.GetRandomIndex(generator);
+            }
+
+            /// <summary>
+            /// Returns a random value from the current instance. Elements with a higher <see cref="PriorityNode{T}.Priority"/> value
+            /// will have a higher probability; elements with a <see cref="PriorityNode{T}.Priority"/> less than or equal to 0 will be ignored.
+            /// </summary>
+            /// <param name="generator">The random number generator to use.</param>
+            /// <returns>A random value in the current list.</returns>
+            /// <exception cref="ArgumentNullException">
+            /// <paramref name="generator"/> is <see langword="null"/>.
+            /// </exception>
+            /// <exception cref="InvalidOperationException">
+            /// The current list does not contain any elements with a <see cref="PriorityNode{T}.Priority"/> value greater than 0.
+            /// </exception>
+            public T GetRandomValue(Random generator)
+            {
+                return _list.GetRandomValue(generator);
+            }
         }
     }
 
