@@ -34,6 +34,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+#if NOFIND
+using System.Linq;
+using System.Diagnostics.Contracts;
+#endif
 
 namespace URandomGen
 {
@@ -352,7 +356,16 @@ namespace URandomGen
         /// within the list, if found; otherwise, -1.</returns>
         public int IndexOf(T value)
         {
+#if NOFIND
+            for (int i = 0; i < _list.Count; i++)
+            {
+                if (EqualityComparer<T>.Default.Equals(_list[i].Value, value))
+                    return i;
+            }
+            return -1;
+#else
             return _list.FindIndex(i => EqualityComparer<T>.Default.Equals(value, i.Value));
+#endif
         }
 
         /// <summary>
@@ -488,7 +501,14 @@ namespace URandomGen
         /// </exception>
         public PriorityNode<T> Find(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            int dex = FindIndex(match);
+            if (dex < 0)
+                return default(PriorityNode<T>);
+            return _list[dex];
+#else
             return _list.Find(match);
+#endif
         }
 
         /// <summary>
@@ -503,7 +523,7 @@ namespace URandomGen
         /// </exception>
         public PriorityNode<T> Find(Predicate<T> match)
         {
-            return _list.Find(_predicator(match));
+            return Find(_predicator(match));
         }
 
         /// <summary>
@@ -518,7 +538,14 @@ namespace URandomGen
         /// </exception>
         public PriorityNode<T> FindLast(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            int dex = FindLastIndex(match);
+            if (dex < 0)
+                return default(PriorityNode<T>);
+            return _list[dex];
+#else
             return _list.FindLast(match);
+#endif
         }
 
         /// <summary>
@@ -533,7 +560,7 @@ namespace URandomGen
         /// </exception>
         public PriorityNode<T> FindLast(Predicate<T> match)
         {
-            return _list.FindLast(_predicator(match));
+            return FindLast(_predicator(match));
         }
 
         /// <summary>
@@ -547,7 +574,20 @@ namespace URandomGen
         /// </exception>
         public int FindIndex(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (match == null)
+                throw new ArgumentNullException("match");
+            Contract.EndContractBlock();
+
+            for (int i = 0; i < _list.Count; i++)
+            {
+                if (match(_list[i]))
+                    return i;
+            }
+            return -1;
+#else
             return _list.FindIndex(match);
+#endif
         }
 
         /// <summary>
@@ -561,8 +601,24 @@ namespace URandomGen
         /// </exception>
         public int FindIndex(Predicate<T> match)
         {
-            return _list.FindIndex(_predicator(match));
+            return FindIndex(_predicator(match));
         }
+
+#if NOFIND
+        private int FindIndex(Predicate<PriorityNode<T>> match, int startIndex, int end)
+        {
+            if (match == null)
+                throw new ArgumentNullException("match");
+            Contract.EndContractBlock();
+
+            for (int i = startIndex; i < end; i++)
+            {
+                if (match(_list[i]))
+                    return i;
+            }
+            return -1;
+        }
+#endif
 
         /// <summary>
         /// Searches for a node matching the conditions defined by the specified predicate,
@@ -579,7 +635,14 @@ namespace URandomGen
         /// </exception>
         public int FindIndex(int startIndex, Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (startIndex < 0 || startIndex >= _list.Count)
+                throw new ArgumentOutOfRangeException("startIndex");
+
+            return FindIndex(match, startIndex, _list.Count);
+#else
             return _list.FindIndex(startIndex, match);
+#endif
         }
 
         /// <summary>
@@ -597,7 +660,7 @@ namespace URandomGen
         /// </exception>
         public int FindIndex(int startIndex, Predicate<T> match)
         {
-            return _list.FindIndex(startIndex, _predicator(match));
+            return FindIndex(startIndex, _predicator(match));
         }
 
         /// <summary>
@@ -616,7 +679,17 @@ namespace URandomGen
         /// </exception>
         public int FindIndex(int startIndex, int count, Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (startIndex < 0 || startIndex >= _list.Count)
+                throw new ArgumentOutOfRangeException("startIndex");
+            int end = startIndex + count;
+            if (end > _list.Count)
+                throw new ArgumentOutOfRangeException(null, "The specified values do not specify a valid range of elements for the search.");
+
+            return FindIndex(match, startIndex, end);
+#else
             return _list.FindIndex(startIndex, count, match);
+#endif
         }
 
         /// <summary>
@@ -635,7 +708,7 @@ namespace URandomGen
         /// </exception>
         public int FindIndex(int startIndex, int count, Predicate<T> match)
         {
-            return _list.FindIndex(startIndex, count, _predicator(match));
+            return FindIndex(startIndex, count, _predicator(match));
         }
 
         /// <summary>
@@ -649,7 +722,19 @@ namespace URandomGen
         /// </exception>
         public int FindLastIndex(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (match == null)
+                throw new ArgumentNullException("match");
+
+            for (int i = _list.Count - 1; i >= 0; i--)
+            {
+                if (match(_list[i]))
+                    return i;
+            }
+            return -1;
+#else
             return _list.FindLastIndex(match);
+#endif
         }
 
         /// <summary>
@@ -663,8 +748,24 @@ namespace URandomGen
         /// </exception>
         public int FindLastIndex(Predicate<T> match)
         {
-            return _list.FindLastIndex(_predicator(match));
+            return FindLastIndex(_predicator(match));
         }
+
+#if NOFIND
+        private int FindLastIndex(Predicate<PriorityNode<T>> match, int startIndex, int end)
+        {
+            if (match == null)
+                throw new ArgumentNullException("match");
+            Contract.EndContractBlock();
+
+            for (int i = startIndex; i >= end; i--)
+            {
+                if (match(_list[i]))
+                    return i;
+            }
+            return -1;
+        }
+#endif
 
         /// <summary>
         /// Searches for a node matching the conditions defined by the specified predicate,
@@ -681,7 +782,14 @@ namespace URandomGen
         /// </exception>
         public int FindLastIndex(int startIndex, Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (startIndex < 0 || startIndex >= _list.Count)
+                throw new ArgumentOutOfRangeException("startIndex");
+
+            return FindLastIndex(match, startIndex, 0);
+#else
             return _list.FindLastIndex(startIndex, match);
+#endif
         }
 
         /// <summary>
@@ -699,7 +807,7 @@ namespace URandomGen
         /// </exception>
         public int FindLastIndex(int startIndex, Predicate<T> match)
         {
-            return _list.FindLastIndex(startIndex, _predicator(match));
+            return FindLastIndex(startIndex, _predicator(match));
         }
 
         /// <summary>
@@ -718,7 +826,20 @@ namespace URandomGen
         /// </exception>
         public int FindLastIndex(int startIndex, int count, Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (startIndex < 0 || startIndex >= _list.Count)
+                throw new ArgumentOutOfRangeException("startIndex");
+            if (count < 0)
+                throw new ArgumentOutOfRangeException("count");
+
+            int end = startIndex - count;
+            if (end < 0)
+                throw new ArgumentOutOfRangeException("count", "The specified values do not specify a valid range of elements for the backward search.");
+
+            return FindLastIndex(match, startIndex, end);
+#else
             return _list.FindLastIndex(startIndex, count, match);
+#endif
         }
 
         /// <summary>
@@ -737,7 +858,7 @@ namespace URandomGen
         /// </exception>
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
-            return _list.FindLastIndex(startIndex, count, _predicator(match));
+            return FindLastIndex(startIndex, count, _predicator(match));
         }
 
         /// <summary>
@@ -751,7 +872,17 @@ namespace URandomGen
         /// </exception>
         public WeightedList<T> FindAll(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (match == null)
+                throw new ArgumentNullException("match");
+            Contract.EndContractBlock();
+
+            var list = new WeightedList<T>(_list.Where(i => match(i)));
+            list.TrimExcess();
+            return list;
+#else
             return new WeightedList<T>() { _list = _list.FindAll(match) };
+#endif
         }
 
         /// <summary>
@@ -765,7 +896,7 @@ namespace URandomGen
         /// </exception>
         public WeightedList<T> FindAll(Predicate<T> match)
         {
-            return new WeightedList<T>() { _list = _list.FindAll(_predicator(match)) };
+            return FindAll(_predicator(match));
         }
 
         /// <summary>
@@ -778,7 +909,15 @@ namespace URandomGen
         /// </exception>
         public bool Exists(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (match == null)
+                throw new ArgumentNullException("match");
+            Contract.EndContractBlock();
+
+            return _list.Any(i => match(i));
+#else
             return _list.Exists(match);
+#endif
         }
 
         /// <summary>
@@ -791,7 +930,7 @@ namespace URandomGen
         /// </exception>
         public bool Exists(Predicate<T> match)
         {
-            return _list.Exists(_predicator(match));
+            return Exists(_predicator(match));
         }
 
         /// <summary>
@@ -804,7 +943,15 @@ namespace URandomGen
         /// </exception>
         public bool TrueForAll(Predicate<PriorityNode<T>> match)
         {
+#if NOFIND
+            if (match == null)
+                throw new ArgumentNullException("match");
+            Contract.EndContractBlock();
+
+            return !_list.Any(i => !match(i));
+#else
             return _list.TrueForAll(match);
+#endif
         }
 
         /// <summary>
@@ -817,7 +964,7 @@ namespace URandomGen
         /// </exception>
         public bool TrueForAll(Predicate<T> match)
         {
-            return _list.TrueForAll(_predicator(match));
+            return TrueForAll(_predicator(match));
         }
         #endregion
 

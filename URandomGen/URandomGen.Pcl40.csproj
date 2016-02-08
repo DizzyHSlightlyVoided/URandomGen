@@ -22,7 +22,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Pcl 4.0\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Pcl 4.0\Debug\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_4_0;PCL;NOBIGINT;NOCRYPT;NOARGRANGE3;NOCOM</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_4_0;PCL;NOBIGINT;NOCRYPT;NOARGRANGE3;NOCOM;NOFIND</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Pcl 4.0\Debug\URandomGen.xml</DocumentationFile>
@@ -32,7 +32,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Pcl 4.0\Release\</OutputPath>
     <IntermediateOutputPath>obj\Pcl 4.0\Release\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_4_0;PCL;NOBIGINT;NOCRYPT;NOARGRANGE3;NOCOM</DefineConstants>
+    <DefineConstants>TRACE;NET_4_0;PCL;NOBIGINT;NOCRYPT;NOARGRANGE3;NOCOM;NOFIND</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Pcl 4.0\Release\URandomGen.xml</DocumentationFile>
