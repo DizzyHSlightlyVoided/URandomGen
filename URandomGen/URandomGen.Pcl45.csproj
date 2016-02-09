@@ -22,7 +22,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Pcl 4.5\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Pcl 4.5\Debug\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_4_5;PCL;NOBIGINT;NOCRYPT;IREADONLY;ARRAYSEG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;PCL_4_5;PCL;NOBIGINT;NOCRYPT;IREADONLY;ARRAYSEG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Pcl 4.5\Debug\URandomGen.xml</DocumentationFile>

@@ -6,12 +6,27 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("URandomGen")]
 [assembly: AssemblyDescription("A .Net library containing alternate implementations of the System.Random type.")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("URandomGen")]
 [assembly: AssemblyCopyright("Copyright © 2015 by KimikoMuffin")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+#if NET_2_0
+[assembly: AssemblyConfiguration("For .Net 2.0")]
+#elif NET_3_5
+[assembly: AssemblyConfiguration("For .Net 3.5")]
+#elif NET_4_0
+[assembly: AssemblyConfiguration("For .Net 4.0")]
+#elif NET_4_5
+[assembly: AssemblyConfiguration("For .Net 4.5")]
+#elif NET_4_6
+[assembly: AssemblyConfiguration("For .Net 4.6")]
+#elif PCL_4_5
+[assembly: AssemblyConfiguration("For PCL 4.5")]
+#elif PCL_4_0
+[assembly: AssemblyConfiguration("For PCL 4.0")]
+#endif
 
 #if !NOCOM
 // Setting ComVisible to false makes the types in this assembly not visible 
