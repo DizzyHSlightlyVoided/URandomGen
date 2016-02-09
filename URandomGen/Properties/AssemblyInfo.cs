@@ -12,7 +12,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-#if NET_2_0
+#if ANDROID
+[assembly: AssemblyConfiguration("For Android")]
+#elif IOS
+[assembly: AssemblyConfiguration("For iOS")]
+#elif NET_2_0
 [assembly: AssemblyConfiguration("For .Net 2.0")]
 #elif NET_3_5
 [assembly: AssemblyConfiguration("For .Net 3.5")]
@@ -45,5 +49,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.8.1.0")]
-[assembly: AssemblyFileVersion("0.8.1.0")]
+[assembly: AssemblyVersion("0.8.2.0")]
+[assembly: AssemblyFileVersion("0.8.2.0")]

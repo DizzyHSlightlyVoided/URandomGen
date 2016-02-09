@@ -3,37 +3,42 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}</ProjectGuid>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{72C168B1-1CE1-461B-9266-5806DE30AD47}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>URandomGen</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>URandomGen</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Net 2.0\Debug\</OutputPath>
-    <IntermediateOutputPath>bin\Net 2.0\Debug\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;NOCONTRACT;NOCRYPTCLOSE;NOBIGINT;NOLINQ;NOFUNC;NOCOMPARECREATE</DefineConstants>
+    <OutputPath>bin\iOS\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\iOS\Debug\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;MOBILE;IOS;IREADONLY;ARRAYSEG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Net 2.0\Debug\URandomGen.XML</DocumentationFile>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Net 2.0\Release\</OutputPath>
-    <IntermediateOutputPath>bin\Net 2.0\Release\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_2_0;NOCONTRACT;NOCRYPTCLOSE;NOBIGINT;NOLINQ;NOFUNC;NOCOMPARECREATE</DefineConstants>
+    <OutputPath>bin\iOS\Release\</OutputPath>
+    <IntermediateOutputPath>obj\Android\Release\</IntermediateOutputPath>
+    <DefineConstants>MOBILE;IOS;IREADONLY;ARRAYSEG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Net 2.0\Release\URandomGen.XML</DocumentationFile>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MarkovChain.cs" />
@@ -46,12 +51,5 @@
     <Compile Include="RandomXorshift.cs" />
     <Compile Include="WeightedList.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

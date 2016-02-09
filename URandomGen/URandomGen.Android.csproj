@@ -3,37 +3,47 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{94866BC3-A2CD-42C8-9F26-4AA082AE2DAA}</ProjectGuid>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A686108D-ABE2-47BA-A827-07F5F4A18D67}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>URandomGen</RootNamespace>
     <AssemblyName>URandomGen</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v4.0.3</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Net 2.0\Debug\</OutputPath>
-    <IntermediateOutputPath>bin\Net 2.0\Debug\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;NOCONTRACT;NOCRYPTCLOSE;NOBIGINT;NOLINQ;NOFUNC;NOCOMPARECREATE</DefineConstants>
+    <OutputPath>bin\Android\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\Android\Debug\</IntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;__MOBILE__;__ANDROID__;MOBILE;ANDROID;IREADONLY;ARRAYSEG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Net 2.0\Debug\URandomGen.XML</DocumentationFile>
+    <DocumentationFile>bin\Android\Debug\URandomGen.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Net 2.0\Release\</OutputPath>
-    <IntermediateOutputPath>bin\Net 2.0\Release\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_2_0;NOCONTRACT;NOCRYPTCLOSE;NOBIGINT;NOLINQ;NOFUNC;NOCOMPARECREATE</DefineConstants>
+    <OutputPath>bin\Android\Release\</OutputPath>
+    <IntermediateOutputPath>obj\Android\Release\</IntermediateOutputPath>
+    <DefineConstants>TRACE;__MOBILE__;__ANDROID__;MOBILE;ANDROID;IREADONLY;ARRAYSEG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Net 2.0\Release\URandomGen.XML</DocumentationFile>
+    <DocumentationFile>bin\Android\Release\URandomGen.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MarkovChain.cs" />
@@ -46,7 +56,7 @@
     <Compile Include="RandomXorshift.cs" />
     <Compile Include="WeightedList.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
