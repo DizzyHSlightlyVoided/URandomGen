@@ -101,7 +101,7 @@ namespace URandomGen
         private Dictionary<ChainValue, int> _firstDict;
         private WeightedList<MarkovChainNode<T>> _firsts;
         /// <summary>
-        /// Gets a read-only list containing 
+        /// Gets a read-only list containing all values which have occurred as the first element in the list.
         /// </summary>
         public WeightedList<MarkovChainNode<T>>.ReadOnly FirstList { get; private set; }
 
@@ -133,8 +133,7 @@ namespace URandomGen
                         int firstDex;
                         AddOrIncrementPriority(curChainValue, _firstDict, _firsts, GetNode, out firstDex);
                     }
-                    else
-                        prevNode.SetNext(curChainValue);
+                    else prevNode.SetNext(curChainValue);
 
                     var someNode = GetNode(curChainValue);
 
@@ -404,7 +403,7 @@ namespace URandomGen
         }
         #endregion
 
-        internal struct ChainValue : IEquatable<ChainValue>
+        internal struct ChainValue
         {
             internal ChainValue(T value)
             {
@@ -423,37 +422,12 @@ namespace URandomGen
 
             public override string ToString()
             {
-                if (_notEnd)
-                    return string.Concat('{', _value, '}');
-
-                return "[end]";
-            }
-
-            public bool Equals(ChainValue other)
-            {
-                return Equals(other, EqualityComparer<T>.Default);
-            }
-
-            internal bool Equals(ChainValue other, IEqualityComparer<T> comparer)
-            {
                 if (!_notEnd)
-                    return !other._notEnd;
+                    return "[end]";
 
-                return other._notEnd && comparer.Equals(_value, other._value);
-            }
+                if (_value == null) return null;
 
-            public override bool Equals(object obj)
-            {
-                return obj is ChainValue && Equals((ChainValue)obj);
-            }
-
-            public override int GetHashCode()
-            {
-                if (!_notEnd)
-                    return -1;
-
-                if (_value == null) return 0;
-                return _value.GetHashCode();
+                return _value.ToString();
             }
 
             internal class Comparer : IEqualityComparer<ChainValue>, IEquatable<Comparer>
@@ -471,7 +445,8 @@ namespace URandomGen
 
                 public bool Equals(ChainValue x, ChainValue y)
                 {
-                    return x.Equals(y, _comparer);
+                    if (x._notEnd) return y._notEnd;
+                    return _comparer.Equals(x._value, y._value);
                 }
 
                 public int GetHashCode(ChainValue obj)
