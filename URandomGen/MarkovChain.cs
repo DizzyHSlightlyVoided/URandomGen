@@ -551,7 +551,7 @@ namespace URandomGen
                 NextListNoEnd.Add(node, node.IsEnd ? 0 : 1);
             else if (!node.IsEnd)
             {
-                double priority = NextListField.GetPriorityAt(index);
+                double priority = NextListField[index].Priority;
                 NextListNoEnd.SetPriorityAt(index, priority);
             }
         }

@@ -256,30 +256,35 @@ namespace URandomGen
         }
 
         /// <summary>
-        /// Gets the priority of the value at the specified index.
+        /// Sets the priority of the node at the specified index.
         /// </summary>
-        /// <param name="index">The index of the value to get.</param>
-        /// <returns>The priority of the value at <paramref name="index"/>.</returns>
+        /// <param name="index">The index of the priority to set.</param>
+        /// <param name="priority">The priority of the node to set.</param>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
-        /// </exception>
-        public double GetPriorityAt(int index)
-        {
-            return _list[index].Priority;
-        }
-
-        /// <summary>
-        /// Sets the priority of the value at the specified index.
-        /// </summary>
-        /// <param name="index">The index of the value to set.</param>
-        /// <param name="priority">The priority of the value to set.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// <para><paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.</para>
+        /// <para>-OR-</para>
+        /// <para><paramref name="priority"/> is less than 0.</para>
         /// </exception>
         public void SetPriorityAt(int index, double priority)
         {
             var node = _list[index];
+            PriorityNode<T>.PriorityCheck(priority, "priority");
             node.Priority = priority;
+            _list[index] = node;
+        }
+
+        /// <summary>
+        /// Sets the value of the node at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the value to set.</param>
+        /// <param name="value">The value of the node to set.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
+        /// </exception>
+        public void SetValueAt(int index, T value)
+        {
+            var node = _list[index];
+            node.Value = value;
             _list[index] = node;
         }
 
@@ -1088,19 +1093,6 @@ namespace URandomGen
             }
 
             /// <summary>
-            /// Gets the priority of the value at the specified index.
-            /// </summary>
-            /// <param name="index">The index of the value to get.</param>
-            /// <returns>The priority of the value at <paramref name="index"/>.</returns>
-            /// <exception cref="ArgumentOutOfRangeException">
-            /// <paramref name="index"/> is less than 0 or is greater than or equal to <see cref="Count"/>.
-            /// </exception>
-            public double GetPriorityAt(int index)
-            {
-                return _list._list[index].Priority;
-            }
-
-            /// <summary>
             /// Determines if the specified value exists in the list with the specified priority.
             /// </summary>
             /// <param name="value">The value to search for in the list.</param>
@@ -1193,22 +1185,60 @@ namespace URandomGen
         /// Creates a new instance with the specified values.
         /// </summary>
         /// <param name="value">The value to set.</param>
-        /// <param name="priority">Indicates the priority of the value. Values less than or equal to 0 are ignored.</param>
+        /// <param name="priority">Indicates the priority of the value. A priority of 0.0 will mean the current instance is ignored.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="priority"/> is less than 0.
+        /// </exception>
         public PriorityNode(T value, double priority)
         {
-            Value = value;
-            Priority = priority;
+            PriorityCheck(priority, "priority");
+#if !NOCONTRACT
+            Contract.EndContractBlock();
+#endif
+            _value = value;
+            _priority = priority;
         }
 
+        private T _value;
         /// <summary>
         /// The value of the current instance.
         /// </summary>
-        public T Value;
+        public T Value
+        {
+            get { return _value; }
+            set { _value = value; }
+        }
 
+        internal static void PriorityCheck(double priority, string paramName)
+        {
+            if (priority < 0)
+                throw new ArgumentOutOfRangeException(paramName,
+#if !NOARGRANGE3
+                    priority,
+#endif
+                        "The specified value is less than 0.");
+
+        }
+
+        private double _priority;
         /// <summary>
-        /// The priority of the current instance. A value less than or equal to 0.0 will mean the current instance is ignored.
+        /// Gets and sets the priority of the current instance. A value of 0.0 will mean the current instance is ignored.
         /// </summary>
-        public double Priority;
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// In a set operation, the specified value is less than 0.
+        /// </exception>
+        public double Priority
+        {
+            get { return _priority; }
+            set
+            {
+                PriorityCheck(value, "value");
+#if !NOCONTRACT
+                Contract.EndContractBlock();
+#endif
+                _priority = value;
+            }
+        }
 
         /// <summary>
         /// Compares the current value to the specified other <see cref="PriorityNode{T}"/> value.
