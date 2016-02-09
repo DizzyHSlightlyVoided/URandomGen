@@ -30,6 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Collections.Generic;
+#if !NOCONTRACT
+using System.Diagnostics.Contracts;
+#endif
 
 namespace URandomGen
 {
@@ -151,39 +154,43 @@ namespace URandomGen
 
         private object _lock = new object();
 
+        #region Generate Chain
         private void _checkInitialized()
         {
             if (_firsts.Count == 0)
                 throw new InvalidOperationException("The current instance has not been initialized.");
         }
 
-        #region Generate Chain
         /// <summary>
-        /// Returns a randomly-generated markov chain using the specified random number generator.
+        /// Returns a randomly-generated Markov chain using the specified random number generator.
         /// This method continues until it reaches a node which has <see cref="MarkovChainNode{T}.IsEnd"/> set to <see langword="true"/>.
         /// </summary>
         /// <param name="generator">The random number generator to use.</param>
         /// <param name="strictStart">If <see langword="true"/>, starts with an element in <see cref="FirstList"/>.
         /// Otherwise, starts with any element in <see cref="ItemList"/>.</param>
-        /// <returns>An array containing elements of a random length.</returns>
+        /// <returns>An array of a random length, containing a random sequence in which each element depends solely on the immediately previous element.</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        /// The current instance has not been initialized and <see cref="FirstList"/> is empty.
+        /// The current instance has not been initialized with any data.
         /// </exception>
         public T[] GenerateChainAnyLength(Random generator, bool strictStart)
         {
+            if (generator == null) throw new ArgumentNullException("generator");
             lock (_lock)
             {
                 _checkInitialized();
-
+#if !NOCONTRACT
+                Contract.EndContractBlock();
+#endif
                 List<T> getList = new List<T>();
                 MarkovChainNode<T> curNode = _firsts.GetRandomValue(generator);
 
                 while (!curNode.IsEnd)
                 {
                     getList.Add(curNode.Value);
+
                     curNode = curNode.NextListField.GetRandomValue(generator);
                 }
 
@@ -202,11 +209,160 @@ namespace URandomGen
         /// <paramref name="generator"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        /// The current instance has not been initialized and <see cref="FirstList"/> is empty.
+        /// The current instance has not been initialized with any data.
         /// </exception>
         public T[] GenerateChainAnyLength(Random generator)
         {
             return GenerateChainAnyLength(generator, true);
+        }
+
+        private T[] _generateChain(Random generator, int length, bool strictStart)
+        {
+            T[] result = new T[length];
+
+            if (length == 0)
+                return result;
+
+            WeightedList<MarkovChainNode<T>> firstItems, allItems;
+            if (strictStart)
+            {
+                firstItems = _firsts.FindAll(NotEnd);
+                allItems = null;
+            }
+            else firstItems = allItems = _items.FindAll(NotEnd);
+
+            MarkovChainNode<T> curNode = firstItems.GetRandomValue(generator);
+
+            result[0] = curNode.Value;
+
+            for (int i = 1; i < length; i++)
+            {
+                if (curNode.NextListNoEnd.Count == 1 && curNode.NextListNoEnd[0].Value.IsEnd)
+                {
+                    if (allItems == null) allItems = _items.FindAll(NotEnd);
+                    curNode = allItems.GetRandomValue(generator);
+                }
+                else curNode = curNode.NextListNoEnd.GetRandomValue(generator);
+
+                result[i] = curNode.Value;
+            }
+
+            return result;
+        }
+
+        private static bool NotEnd(MarkovChainNode<T> value)
+        {
+            return !value.IsEnd;
+        }
+
+        /// <summary>
+        /// Returns a randomly-generated Markov chain of the specified length using the specified random number generator.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="length">The number of elements in the Markov chain.</param>
+        /// <param name="strictStart">If <see langword="true"/>, starts with an element in <see cref="FirstList"/>.
+        /// Otherwise, starts with any element in <see cref="ItemList"/>.</param>
+        /// <returns>An array with <paramref name="length"/> elements, containing a random sequence in which each element
+        /// depends solely on the immediately previous element.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// In a set operation, <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The current instance has not been initialized with any data.
+        /// </exception>
+        public T[] GenerateChain(Random generator, int length, bool strictStart)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException("length",
+#if !NOARGRANGE3
+                    length,
+#endif
+                        "The specified length is less than 0.");
+            }
+
+            lock (_lock)
+            {
+                _checkInitialized();
+#if !NOCONTRACT
+                Contract.EndContractBlock();
+#endif
+                return _generateChain(generator, length, strictStart);
+            }
+        }
+
+        /// <summary>
+        /// Returns a randomly-generated Markov chain of the specified length using the specified random number generator,
+        /// starting with an element in <see cref="FirstList"/>.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="length">The number of elements in the Markov chain.</param>
+        /// <returns>An array with <paramref name="length"/> elements, containing a random sequence in which each element
+        /// depends solely on the immediately previous element.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// In a set operation, <paramref name="length"/> is less than 0.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The current instance has not been initialized with any data.
+        /// </exception>
+        public T[] GenerateChain(Random generator, int length)
+        {
+            return GenerateChain(generator, length, true);
+        }
+
+        /// <summary>
+        /// Returns a randomly-generated Markov chain using the specified random number generator.
+        /// This method selects a length from <see cref="Lengths"/>.
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <param name="strictStart">If <see langword="true"/>, starts with an element in <see cref="FirstList"/>.
+        /// Otherwise, starts with any element in <see cref="ItemList"/>.</param>
+        /// <returns>An array of a random length selected from <see cref="Lengths"/>, containing a random sequence in which each element
+        /// depends solely on the immediately previous element.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The current instance has not been initialized with any data.
+        /// </exception>
+        public T[] GenerateChainExistingLength(Random generator, bool strictStart)
+        {
+            if (generator == null) throw new ArgumentNullException("generator");
+
+            lock (_lock)
+            {
+                _checkInitialized();
+#if !NOCONTRACT
+                Contract.EndContractBlock();
+#endif
+                return _generateChain(generator, _lengths.GetRandomValue(generator), strictStart);
+            }
+        }
+
+        /// <summary>
+        /// Returns a randomly-generated Markov chain using the specified random number generator.
+        /// This method selects a length from <see cref="Lengths"/>, and starts with an item selected from <see cref="FirstList"/>
+        /// </summary>
+        /// <param name="generator">The random number generator to use.</param>
+        /// <returns>An array of a random length selected from <see cref="Lengths"/>, containing a random sequence in which each element
+        /// depends solely on the immediately previous element.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="generator"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// The current instance has not been initialized with any data.
+        /// </exception>
+        public T[] GenerateChainExistingLength(Random generator)
+        {
+            return GenerateChainExistingLength(generator, true);
         }
         #endregion
 
