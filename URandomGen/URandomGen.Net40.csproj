@@ -38,6 +38,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarkovChain.cs" />
     <Compile Include="RandomCMWC.cs" />
     <Compile Include="RandomCrypt.cs" />
     <Compile Include="RandomGen.cs" />

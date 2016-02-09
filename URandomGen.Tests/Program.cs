@@ -52,7 +52,7 @@ namespace URandomGen.Tests
 
             do
             {
-                Console.WriteLine("Each test involves the generation of " + _maxVals + " random numbers; however, not all values will be used for all tests.");
+                Console.WriteLine("The numbered tests involve the generation of " + _maxVals + " random numbers; however, not all values will be used for all tests.");
                 Console.WriteLine("1. RandomCMWC");
                 Console.WriteLine("2. RandomMersenne");
                 Console.WriteLine("3. RandomXorShift");
@@ -63,6 +63,7 @@ namespace URandomGen.Tests
                 Console.WriteLine("R. System.Random, for comparison");
                 Console.WriteLine("W. Test WeightedList");
                 Console.WriteLine("G. Test RandomGen methods");
+                Console.WriteLine("M. Test Markov chains.");
                 Console.WriteLine("X. Exit");
 
                 key = ReadKey();
@@ -237,6 +238,9 @@ namespace URandomGen.Tests
                             Console.WriteLine();
                         }
                         break;
+                    case ConsoleKey.M:
+                        Markov();
+                        break;
                     default:
                         generator = null;
                         genGenerator = null;
@@ -329,6 +333,48 @@ namespace URandomGen.Tests
 
             }
             while (key != ConsoleKey.X);
+        }
+
+        private static void Markov()
+        {
+            Console.WriteLine("Generating Markov structure from the Declaration of Independence ...");
+            RandomCMWC generator = new RandomCMWC();
+
+            MarkovChain<string> markovSentences = new MarkovChain<string>();
+            {
+                string[] sentences = Resources.DeclarationOfIndependence.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < sentences.Length; i++)
+                    markovSentences.ComputePriorities(Splitter(sentences[i].Split((char[])null, StringSplitOptions.RemoveEmptyEntries)));
+            }
+            Console.WriteLine();
+            Console.WriteLine("Randomly generated sentences: ");
+            int sentenceCount = generator.Next(3, 6);
+            for (int sentences = 0; sentences < 5; sentences++)
+            {
+                string[] sentence = markovSentences.GenerateChainAnyLength(generator);
+                Console.WriteLine(Joiner(sentence));
+            }
+            Console.WriteLine();
+        }
+
+        private static IEnumerable<string> Splitter(IEnumerable<string> words)
+        {
+            foreach (string s in words)
+            {
+                int lastIndex = s.Length - 1;
+                char lastChar = s[lastIndex];
+                if (lastChar == ';' || lastChar == ',' || lastChar == ':')
+                {
+                    yield return s.Substring(0, lastIndex);
+                    yield return s.Substring(lastIndex);
+                }
+                else yield return s;
+            }
+        }
+
+        private static string Joiner(string[] sentence)
+        {
+            return string.Join(" ", sentence).Replace(" ;", ";").Replace(" ,", ",").Replace(" :", ":") + ".";
         }
 
         private static void CloseGraphs(ref Bitmap bmpBitmap, ref Bitmap bmpGraphs, ref Bitmap bmpGraphsBig, Action closeGenerator)

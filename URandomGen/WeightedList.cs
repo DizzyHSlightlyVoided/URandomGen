@@ -265,7 +265,7 @@ namespace URandomGen
         /// </exception>
         public double GetPriorityAt(int index)
         {
-            return this[index].Priority;
+            return _list[index].Priority;
         }
 
         /// <summary>
@@ -278,9 +278,9 @@ namespace URandomGen
         /// </exception>
         public void SetPriorityAt(int index, double priority)
         {
-            var node = this[index];
+            var node = _list[index];
             node.Priority = priority;
-            this[index] = node;
+            _list[index] = node;
         }
 
         /// <summary>
